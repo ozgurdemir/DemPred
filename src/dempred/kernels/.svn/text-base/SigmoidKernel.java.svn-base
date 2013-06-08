@@ -1,0 +1,50 @@
+package dempred.kernels;
+
+import java.io.Serializable;
+
+import dempred.fmath.FVector;
+
+
+public class SigmoidKernel implements KernelInterface, Serializable {
+	private static final long serialVersionUID = -6082112731711339252L;
+	private double factor;
+	private double offset;
+
+	public SigmoidKernel() {
+		setFactor(1.0);
+		setOffset(1.0);
+	}
+
+	public SigmoidKernel(double factor) {
+		setFactor(factor);
+		setOffset(1.0);
+	}
+
+	public SigmoidKernel(double factor, double offset) {
+		setFactor(factor);
+		setOffset(offset);
+	}
+
+	@Override
+	public double evaluate(FVector a, FVector b) {
+		Math.tanh(factor * a.scalarProduct(b) + offset);
+		return 0;
+	}
+
+	public final double getFactor() {
+		return factor;
+	}
+
+	public final void setFactor(double factor) {
+		this.factor = factor;
+	}
+
+	public final double getOffset() {
+		return offset;
+	}
+
+	public final void setOffset(double offset) {
+		this.offset = offset;
+	}
+
+}

@@ -1,0 +1,150 @@
+package dempred.classifier;
+
+import java.io.Serializable;
+
+import dempred.datastructure.Datapoint;
+import dempred.datastructure.Dataset;
+import dempred.fmath.FVector;
+import dempred.grouper.GrouperInterface;
+import dempred.kernels.KernelInterface;
+import dempred.losslunction.LossFunctionInterface;
+
+public abstract class AbstractKernelClassifier<T extends Datapoint> implements ClassifierInterface<T>, Serializable {
+
+	private static final long serialVersionUID = -25654304351676869L;
+	protected transient double w_plus;
+	protected transient double lambda2;
+	protected transient boolean useDWeights;
+	protected transient boolean groupAveraging;
+	protected transient FVector epsilon;
+	protected transient LossFunctionInterface<T> lossFunction;
+	protected FVector alpha;
+	protected GrouperInterface grouper;
+	protected KernelInterface kernel;
+	protected FVector[] trainVectors;
+	protected double offset;
+
+	public final void predict(Dataset<T> dataset) throws IllegalArgumentException {
+		for (Datapoint datapoint : dataset.getDatapoints()) {
+			double value = 0.0;
+			for (int i = 0; i < alpha.size(); ++i)
+				value += alpha.get(i) * kernel.evaluate(trainVectors[i], datapoint.getFeatureVector());
+			datapoint.setPredictedValue(value + offset);
+			if (grouper != null)
+				datapoint.setPredictedGroup(grouper.getGroup(datapoint.getPredictedValue()));
+		}
+	}
+
+	public final double predict(Datapoint datapoint) throws IllegalArgumentException {
+		double value = 0.0;
+		for (int i = 0; i < alpha.size(); ++i)
+			value += alpha.get(i) * kernel.evaluate(trainVectors[i], datapoint.getFeatureVector());
+		datapoint.setPredictedValue(value + offset);
+		if (grouper != null)
+			datapoint.setPredictedGroup(grouper.getGroup(datapoint.getPredictedValue()));
+		return value;
+	}
+
+	public final FVector getWeight() {
+		FVector weight = new FVector(trainVectors[0].size());
+		for (int i = 0; i < alpha.size(); ++i)
+			weight.addVector(trainVectors[i].clone().mulScalar(alpha.get(i)));
+		return weight;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public ClassifierInterface<T> clone() {
+		try {
+			return (AbstractKernelClassifier<T>) super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	// ********************************************
+	// getters and setters
+	// ********************************************
+
+	public final double getW_plus() {
+		return w_plus;
+	}
+
+	public final void setW_plus(double w_plus) {
+		this.w_plus = w_plus;
+	}
+
+	public final double getLambda() {
+		return lambda2;
+	}
+
+	public final void setLambda(double lambda) {
+		this.lambda2 = lambda;
+	}
+
+	public final String getLossFunctionName() {
+		return lossFunction.getName();
+	}
+
+	public final boolean isUseDWeights() {
+		return useDWeights;
+	}
+
+	public final void setUseDWeights(boolean useDWeights) {
+		this.useDWeights = useDWeights;
+	}
+
+	public final boolean isGroupAveraging() {
+		return groupAveraging;
+	}
+
+	public final void setGroupAveraging(boolean groupAveraging) {
+		this.groupAveraging = groupAveraging;
+	}
+
+	public final LossFunctionInterface<T> getLossFunction() {
+		return lossFunction;
+	}
+
+	public final void setLossFunction(LossFunctionInterface<T> lossFunction) {
+		this.lossFunction = lossFunction;
+	}
+
+	public final FVector getEpsilon() {
+		return epsilon;
+	}
+
+	public final void setEpsilon(FVector epsilon) {
+		this.epsilon = epsilon;
+	}
+
+	public final GrouperInterface getGrouper() {
+		return grouper;
+	}
+
+	public final void setGrouper(GrouperInterface grouper) {
+		this.grouper = grouper;
+	}
+
+	public final KernelInterface getKernel() {
+		return kernel;
+	}
+
+	public final void setKernel(KernelInterface kernel) {
+		this.kernel = kernel;
+	}
+
+	public final double getOffset() {
+		return offset;
+	}
+
+	public final void setOffset(double offset) {
+		this.offset = offset;
+	}
+
+	public final FVector getAlpha() {
+		return alpha;
+	}
+
+}

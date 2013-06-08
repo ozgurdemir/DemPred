@@ -1,0 +1,246 @@
+package dempred.datastructure;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import dempred.fmath.FVector;
+
+
+public class Dataset<T extends Datapoint> implements Cloneable, Serializable {
+
+	private static final long serialVersionUID = 6560594683595420293L;
+	private String name;
+	private String comment;
+	private List<T> datapoints;
+	private Map<Integer, Integer> groupCounter;
+	private List<Integer> featureIndex;
+	private List<String> featureNames;
+
+	public Dataset() {
+		name = "";
+		comment = "";
+		datapoints = new ArrayList<T>();
+		groupCounter = new HashMap<Integer, Integer>();
+		featureNames = new ArrayList<String>();
+	}
+
+	public final int size() {
+		return datapoints.size();
+	}
+
+	public int numFeatures() {
+		return featureIndex.size();
+	}
+
+	public int numCorrectPredictions(int groupnumber) {
+		int num = 0;
+		for (Datapoint datapoint : this.getDatapoints()) {
+			if (datapoint.getGroup() != null && datapoint.getGroup() == groupnumber && datapoint.getGroup() == datapoint.getPredictedGroup())
+				++num;
+		}
+		return num;
+	}
+
+	public void addDatapoint(T datapoint) throws IllegalArgumentException {
+		if (featureIndex == null)
+			initFeatureIndex(datapoint.getNumFeatures());
+		else if (featureIndex.size() != datapoint.getNumFeatures())
+			throw new IllegalArgumentException("The inserted datapoint has not the same number of features as the previous ones!: actual:" + featureIndex.size() + " trying to insert: " + datapoint.getNumFeatures());
+		datapoints.add(datapoint);
+		int numGroup = 0;
+		if (datapoint.hasGroup()) {
+			if (groupCounter.containsKey(datapoint.getGroup()))
+				numGroup = groupCounter.get(datapoint.getGroup());
+			groupCounter.put(datapoint.getGroup(), numGroup + 1);
+		}
+	}
+
+	public void initFeatureIndex(int numFeatures) {
+		featureIndex = new ArrayList<Integer>(numFeatures + 1);
+		for (int i = 0; i < numFeatures; ++i)
+			featureIndex.add(i);
+	}
+
+	public int groupQuantity(int groupnumber) {
+		if (groupCounter.containsKey(groupnumber))
+			return groupCounter.get(groupnumber);
+		else
+			return 0;
+	}
+
+	// feature related
+	public Dataset<T> extend(Double value) {
+		for (Datapoint datapoint : this.getDatapoints()) {
+			if (!datapoint.isExtended()) {
+				datapoint.getFeatureVector().extendByOne(value);
+				datapoint.setExtended(true);
+			}
+		}
+		this.featureIndex.add(this.featureIndex.size());
+		return this;
+	}
+
+	public void reduce() {
+		for (Datapoint datapoint : this.getDatapoints()) {
+			if (datapoint.isExtended()) {
+				datapoint.getFeatureVector().reduceByOne();
+				datapoint.setExtended(false);
+			}
+		}
+		this.featureIndex.remove(this.featureIndex.size() - 1);
+	}
+
+	public void keepFeatures(int[] indices) {
+		for (Datapoint datapoint : this.datapoints) {
+			FVector reducedFeatures = new FVector(indices.length);
+			for (int i = 0; i < indices.length; ++i)
+				reducedFeatures.set(i, datapoint.getFeatureAt(indices[i]));
+			datapoint.setFeatureVector(reducedFeatures);
+		}
+		featureIndex = new ArrayList<Integer>(indices.length);
+		for (int i = 0; i < indices.length; ++i)
+			featureIndex.add(indices[i]);
+		if (featureNames != null) {
+			ArrayList<String> newFeatureNames = new ArrayList<String>(indices.length);
+			for (int i = 0; i < indices.length; ++i)
+				newFeatureNames.add(featureNames.get(indices[i]));
+			featureNames = newFeatureNames;
+		}
+	}
+
+	public void deleteFeatures(int[] indices) {
+		Arrays.sort(indices);
+		for (Datapoint datapoint : this.datapoints) {
+			FVector reducedFeatures = new FVector(datapoint.getNumFeatures() - indices.length);
+			int indexPointer = 0;
+			int vectorPointer = 0;
+			for (int i = 0; i < datapoint.getNumFeatures(); ++i) {
+				if (indexPointer < indices.length && i == indices[indexPointer]) {
+					while (indexPointer < indices.length && i == indices[indexPointer])
+						++indexPointer;
+				} else
+					reducedFeatures.set(vectorPointer++, datapoint.getFeatureAt(i));
+			}
+			datapoint.setFeatureVector(reducedFeatures);
+		}
+		// featureIndex hier reduzieren
+		List<Integer> reducedFeatureIndex = new ArrayList<Integer>(featureIndex.size() - indices.length);
+		int indexPointer = 0;
+		for (int i = 0; i < featureIndex.size(); ++i) {
+			if (indexPointer < indices.length && i == indices[indexPointer]) {
+				while (indexPointer < indices.length && i == indices[indexPointer])
+					++indexPointer;
+			} else
+				reducedFeatureIndex.add(featureIndex.get(i));
+		}
+		this.featureIndex = reducedFeatureIndex;
+		// featureNames hier reduzieren
+		if (featureNames != null && featureNames.size() > 0) {
+			List<String> reducedFeatureNames = new ArrayList<String>(featureNames.size() - indices.length);
+			indexPointer = 0;
+			for (int i = 0; i < featureNames.size(); ++i) {
+				if (indexPointer < indices.length && i == indices[indexPointer]) {
+					while (indexPointer < indices.length && i == indices[indexPointer])
+						++indexPointer;
+				} else
+					reducedFeatureNames.add(featureNames.get(i));
+			}
+			this.featureNames = reducedFeatureNames;
+		}
+	}
+
+	public T getDatapoint(int index) {
+		return this.datapoints.get(index);
+	}
+
+	public final String getName() {
+		return name;
+	}
+
+	public final void setName(String name) {
+		this.name = name;
+	}
+
+	public final String getComment() {
+		return comment;
+	}
+
+	public final void setComment(String comment) {
+		this.comment = comment;
+	}
+
+	public final List<T> getDatapoints() {
+		return datapoints;
+	}
+
+	public List<Integer> getFeatureIndex() {
+		return featureIndex;
+	}
+
+	public String toString() {
+		String lineseperator = System.getProperty("line.separator");
+		StringBuffer output = new StringBuffer("#####printing dataset#####" + lineseperator);
+		output.append("Datasetname: " + name + lineseperator);
+		output.append("Datasetcomment: " + comment + lineseperator);
+		output.append("Datapoints: " + datapoints.size() + lineseperator);
+		output.append("FeatureIndex:" + lineseperator);
+		output.append(this.featureIndex + lineseperator);
+		output.append("Datapoints:" + lineseperator);
+		for (Datapoint datapoint : datapoints)
+			output.append(datapoint.toString() + lineseperator);
+		output.append("###########end###########");
+		return output.toString();
+	}
+
+	public String toStringShort() {
+		String lineseperator = System.getProperty("line.separator");
+		StringBuffer output = new StringBuffer("#####printing dataset#####" + lineseperator);
+		output.append("Datasetname: " + name + lineseperator);
+		output.append("Datasetcomment: " + comment + lineseperator);
+		output.append("Datapoints: " + datapoints.size() + lineseperator);
+		output.append("FeatureIndex:" + lineseperator);
+		output.append(this.featureIndex + lineseperator);
+		output.append("Datapoints:" + lineseperator);
+		for (Datapoint datapoint : datapoints)
+			output.append(datapoint.toStringShort() + lineseperator);
+		output.append("###########end###########");
+		return output.toString();
+	}
+
+	public Dataset<T> clone() {
+		try {
+			Dataset<T> cl = (Dataset<T>) super.clone();
+			cl.datapoints = new ArrayList<T>(this.size());
+			cl.groupCounter = new HashMap<Integer, Integer>();
+			cl.featureNames = new ArrayList<String>(this.featureNames);
+			cl.featureIndex = null;
+			for (T datapoint : this.getDatapoints())
+				cl.addDatapoint((T) datapoint.clone());
+			return cl;
+		} catch (CloneNotSupportedException e) {
+			System.out.println("Clone not supported!");
+			return null;
+		}
+	}
+
+	public final Map<Integer, Integer> getGroupCounter() {
+		return groupCounter;
+	}
+
+	public final void setGroupCounter(Map<Integer, Integer> groupCounter) {
+		this.groupCounter = groupCounter;
+	}
+
+	public final List<String> getFeatureNames() {
+		return featureNames;
+	}
+
+	public final void setFeatureNames(List<String> featureNames) {
+		this.featureNames = featureNames;
+	}
+
+}

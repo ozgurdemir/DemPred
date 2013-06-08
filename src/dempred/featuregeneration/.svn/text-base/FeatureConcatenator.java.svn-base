@@ -1,0 +1,54 @@
+package dempred.featuregeneration;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import dempred.datastructure.Datapoint;
+
+public class FeatureConcatenator<T extends Datapoint> implements FeatureGeneratorInterface<T>, Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1715808212392977824L;
+	private ArrayList<FeatureGeneratorInterface<T>> featureGenerators;
+
+	public FeatureConcatenator() {
+		featureGenerators = new ArrayList<FeatureGeneratorInterface<T>>();
+	}
+
+	public FeatureConcatenator(int initialSize) {
+		featureGenerators = new ArrayList<FeatureGeneratorInterface<T>>(initialSize);
+	}
+
+	public double[] generateFeature(T datapoint) throws Exception {
+		double[][] features = new double[featureGenerators.size()][];
+		int numFeatures = 0;
+		for (int i = 0; i < featureGenerators.size(); ++i) {
+			features[i] = featureGenerators.get(i).generateFeature(datapoint);
+			numFeatures += features[i].length;
+		}
+		double[] featureVector = new double[numFeatures];
+		int index = 0;
+		for (int i = 0; i < features.length; ++i)
+			for (int j = 0; j < features[i].length; ++j)
+				featureVector[index++] = features[i][j];
+		return featureVector;
+	}
+
+	public void addFeatureGenerator(FeatureGeneratorInterface<T> featureGenerator) {
+		featureGenerators.add(featureGenerator);
+	}
+
+	public final ArrayList<FeatureGeneratorInterface<T>> getFeatureGenerators() {
+		return featureGenerators;
+	}
+
+	public List<String> getNames(T datapoint) {
+		List<String> featureNames = new ArrayList<String>();
+		for (FeatureGeneratorInterface<T> generator : featureGenerators)
+			featureNames.addAll(generator.getNames(datapoint));
+		return featureNames;
+	}
+
+}

@@ -1,0 +1,405 @@
+package dempred.fmath;
+
+import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import dempred.datastructure.Datapoint;
+
+public class FVector implements Cloneable, Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6270174159819507806L;
+	private double[] elements;
+
+	// ********************konstruktoren
+	public FVector(double[] elements) {
+		this.elements = elements;
+	}
+
+	public FVector(int[] elements) {
+		this.elements = new double[elements.length];
+		for (int i = 0; i < elements.length; ++i)
+			this.elements[i] = elements[i];
+	}
+
+	public FVector(int dim) {
+		this.elements = new double[dim];
+	}
+
+	public FVector(int dim, double init) {
+		this.elements = new double[dim];
+		Arrays.fill(this.elements, init);
+	}
+
+	// ********************modifier
+	public final double get(int i) {
+		return elements[i];
+	}
+
+	public final void set(int i, double element) {
+		elements[i] = element;
+	}
+
+	public final int size() {
+		return elements.length;
+	}
+
+	public FVector extendByOne(double value) {
+		double[] newElements = new double[this.elements.length + 1];
+		System.arraycopy(this.elements, 0, newElements, 0, this.elements.length);
+		newElements[newElements.length - 1] = value;
+		this.elements = newElements;
+		return this;
+	}
+
+	public FVector reduceByOne() {
+		double[] newElements = new double[this.elements.length - 1];
+		System.arraycopy(this.elements, 0, newElements, 0, this.elements.length - 1);
+		this.elements = newElements;
+		return this;
+	}
+
+	// ********************operationen
+
+	public final double sum() {
+		double sum = 0;
+		for (int i = 0; i < elements.length; ++i)
+			sum += this.elements[i];
+		return sum;
+	}
+
+	public final double norm(int p) {
+		double p_norm = 0.0;
+		for (int i = 0; i < elements.length; ++i) {
+			p_norm += Math.pow(Math.abs(this.elements[i]), p);
+		}
+		return p_norm;
+	}
+
+	public final double normRadical(int p) {
+		return Math.pow(norm(p), (1.0 / p));
+	}
+
+	public FVector sign() {
+		for (int i = 0; i < this.elements.length; ++i) {
+			this.elements[i] = Math.signum(this.elements[i]);
+		}
+		return this;
+	}
+
+	public FVector abs() {
+		for (int i = 0; i < this.elements.length; ++i)
+			this.elements[i] = Math.abs(this.elements[i]);
+		return this;
+	}
+
+	public int count(String mode, double x) {
+		int num = 0;
+		for (int i = 0; i < this.elements.length; ++i) {
+			if (mode.equals("<") && this.elements[i] < x)
+				++num;
+			else if (mode.equals("<=") && this.elements[i] <= x)
+				++num;
+			else if (mode.equals(">") && this.elements[i] > x)
+				++num;
+			else if (mode.equals(">=") && this.elements[i] >= x)
+				++num;
+			else if (mode.equals("==") && this.elements[i] == x)
+				++num;
+		}
+		return num;
+	}
+
+	public int[] findIndices(String mode, double x) {
+		List<Integer> indices = new ArrayList<Integer>(this.elements.length);
+		for (int i = 0; i < this.elements.length; ++i) {
+			if (mode.equals("<") && this.elements[i] < x)
+				indices.add(i);
+			else if (mode.equals("<=") && this.elements[i] <= x)
+				indices.add(i);
+			else if (mode.equals(">") && this.elements[i] > x)
+				indices.add(i);
+			else if (mode.equals(">=") && this.elements[i] >= x)
+				indices.add(i);
+			else if (mode.equals("==") && this.elements[i] == x)
+				indices.add(i);
+			else if (mode.equals("!=") && this.elements[i] != x)
+				indices.add(i);
+		}
+		int[] indicesArray = new int[indices.size()];
+		int i = 0;
+		for (Integer index : indices)
+			indicesArray[i++] = index;
+		return indicesArray;
+	}
+
+	public int[] minIndex(int numEntries) {
+		int[] resultArray = new int[numEntries];
+		IndexHelper[] helperArray = new IndexHelper[this.elements.length];
+		for (int i = 0; i < this.elements.length; ++i)
+			helperArray[i] = new IndexHelper(this.elements[i], i);
+		Arrays.sort(helperArray);
+		for (int i = 0; i < numEntries; ++i)
+			resultArray[i] = helperArray[i].index;
+		return resultArray;
+	}
+
+	public int[] maxIndex(int numEntries) {
+		int[] resultArray = new int[numEntries];
+		IndexHelper[] helperArray = new IndexHelper[this.elements.length];
+		for (int i = 0; i < this.elements.length; ++i)
+			helperArray[i] = new IndexHelper(this.elements[i], i);
+		Arrays.sort(helperArray);
+		int j = 0;
+		for (int i = helperArray.length - numEntries; i < helperArray.length; ++i)
+			resultArray[j++] = helperArray[i].index;
+		return resultArray;
+	}
+
+	class IndexHelper implements Comparable<IndexHelper> {
+		public double value;
+		public int index;
+
+		public IndexHelper(double value, int index) {
+			this.value = value;
+			this.index = index;
+		}
+
+		public int compareTo(IndexHelper b) {
+			if (this.value < b.value)
+				return -1;
+			if (this.value > b.value)
+				return 1;
+			else
+				return 0;
+		}
+	}
+
+	public double min() {
+		double min = Double.POSITIVE_INFINITY;
+		for (double value : this.elements) {
+			if (value < min)
+				min = value;
+		}
+		return min;
+	}
+
+	public double max() {
+		double max = Double.NEGATIVE_INFINITY;
+		for (double value : this.elements) {
+			if (value > max)
+				max = value;
+		}
+		return max;
+	}
+
+	public double mean() {
+		double mean = 0.0;
+		for (int i = 0; i < this.elements.length; ++i) {
+			mean += this.elements[i];
+		}
+		return (mean / this.elements.length);
+	}
+
+	public double std() {
+		return std(this.mean());
+	}
+
+	public double std(double mean) {
+		double sdt = 0.0;
+		for (int i = 0; i < this.elements.length; ++i) {
+			sdt += Math.pow(this.elements[i] - mean, 2);
+		}
+		return Math.sqrt(sdt / (this.elements.length - 1));
+	}
+
+	public double median() {
+		double[] sortedElements = elements.clone();
+		Arrays.sort(sortedElements);
+		int medianIndex = (int) Math.ceil((double) sortedElements.length / 2.0) - 1;
+		if (sortedElements.length % 2 == 0)
+			return (sortedElements[medianIndex] + sortedElements[medianIndex + 1]) / 2.0;
+		else
+			return sortedElements[medianIndex];
+	}
+
+	/*
+	 * public void random(byte mean, byte stand){ for(int i=0; i<dimension.length;++i) dimension[i]= (byte)mean + Math.random()stand; }
+	 */
+
+	// ********************matrix operationen
+	public final FVector mulMatrix(FMatrix mat) throws IllegalArgumentException {
+		if (mat.numRows() != this.size())
+			throw new IllegalArgumentException("Matrix(" + mat.numRows() + ") and vector(" + this.size() + ") have different length!");
+		double[] oldVector = this.elements.clone();
+		double value;
+		for (int colnum = 0; colnum < mat.numColumns(); ++colnum) {
+			value = 0.0;
+			for (int i = 0; i < this.size(); ++i) {
+				value += oldVector[i] * mat.getCell(i, colnum);
+			}
+			this.elements[colnum] = value;
+		}
+		return this;
+	}
+
+	// ********************vector operationen
+	public final double scalarProduct(FVector b) {
+		if (this.elements.length != b.elements.length)
+			throw new IllegalArgumentException("Vectors have different number of elements: " + this.elements.length + " and " + b.elements.length);
+		double sum = 0.0;
+		for (int i = 0; i < elements.length; ++i)
+			sum += this.get(i) * b.get(i);
+		return sum;
+	}
+
+	public final FVector addVector(FVector b) throws IllegalArgumentException {
+		if (this.elements.length != b.elements.length)
+			throw new IllegalArgumentException("Vectors have different number of elements: " + this.elements.length + " and " + b.elements.length);
+		for (int i = 0; i < elements.length; ++i)
+			this.elements[i] += b.elements[i];
+		return this;
+	}
+
+	public final FVector subVector(FVector b) {
+		if (this.elements.length != b.elements.length)
+			throw new IllegalArgumentException("Vectors have different number of elements: " + this.elements.length + " and " + b.elements.length);
+		for (int i = 0; i < elements.length; ++i)
+			this.elements[i] -= b.elements[i];
+		return this;
+	}
+
+	public final FVector mulVector(FVector b) {
+		if (this.elements.length != b.elements.length)
+			throw new IllegalArgumentException("Vectors have different number of elements: " + this.elements.length + " and " + b.elements.length);
+		for (int i = 0; i < elements.length; ++i)
+			this.elements[i] *= b.elements[i];
+		return this;
+	}
+
+	public final FVector divVector(FVector b) throws IllegalArgumentException {
+		if (this.elements.length != b.elements.length)
+			throw new IllegalArgumentException("Vectors have different number of elements: " + this.elements.length + " and " + b.elements.length);
+		for (int i = 0; i < elements.length; ++i) {
+			if (b.elements[i] == 0)
+				throw new IllegalArgumentException("Division by zero!");
+			this.elements[i] /= b.elements[i];
+		}
+		return this;
+	}
+
+	public final FVector powVector(FVector b) {
+		if (this.elements.length != b.elements.length)
+			throw new IllegalArgumentException("Vectors have different number of elements: " + this.elements.length + " and " + b.elements.length);
+		for (int i = 0; i < elements.length; ++i)
+			this.elements[i] = Math.pow(this.elements[i], b.elements[i]);
+		return this;
+	}
+
+	// ********************scalar operationen
+	public final FVector powScalar(double scalar) {
+		for (int i = 0; i < elements.length; ++i)
+			this.elements[i] = Math.pow(this.elements[i], scalar);
+		return this;
+	}
+
+	public final FVector divScalarZero(double scalar) {
+		if (scalar == 0)
+			return this;
+		for (int i = 0; i < elements.length; ++i)
+			elements[i] /= scalar;
+		return this;
+	}
+
+	public final FVector divScalar(double scalar) throws IllegalArgumentException {
+		if (scalar == 0)
+			throw new IllegalArgumentException("Division by zero!");
+		for (int i = 0; i < elements.length; ++i)
+			elements[i] /= scalar;
+		return this;
+	}
+
+	public final FVector addScalar(double scalar) {
+		for (int i = 0; i < elements.length; ++i)
+			elements[i] += scalar;
+		return this;
+	}
+
+	public final FVector subScalar(double scalar) {
+		for (int i = 0; i < elements.length; ++i)
+			elements[i] -= scalar;
+		return this;
+	}
+
+	public final FVector mulScalar(double scalar) {
+		for (int i = 0; i < elements.length; ++i)
+			elements[i] *= scalar;
+		return this;
+	}
+
+	// ********************sonstige
+	public FVector delete(int[] indices) {
+		Arrays.sort(indices);
+		double[] reducedVector = new double[this.elements.length - indices.length];
+		int indexPointer = 0;
+		int vectorPointer = 0;
+		for (int i = 0; i < this.elements.length; ++i) {
+			if (indexPointer < indices.length && i == indices[indexPointer])
+				++indexPointer;
+			else
+				reducedVector[vectorPointer++] = this.elements[i];
+		}
+		this.elements = reducedVector;
+		return this;
+	}
+	
+	public void keep(int[] indices) {
+		double[] reduced = new double[indices.length];
+			for (int i = 0; i < indices.length; ++i)
+				reduced[i] = this.elements[indices[i]];
+		this.elements =  reduced;	
+	}
+
+	public FVector clone() {
+		try {
+			FVector cl = (FVector) super.clone();
+			cl.setElements(this.elements.clone());
+			return cl;
+		} catch (CloneNotSupportedException e) {
+			System.out.println("Clone not supported!");
+			return null;
+		}
+	}
+
+	public final String toString() {
+		return toString(",", "0.0000");
+	}
+
+	public final String toString(String delimiter, String pattern) {
+		String del = "";
+		StringBuffer output = new StringBuffer(this.elements.length * 10);
+		DecimalFormat myDF = new DecimalFormat(pattern);
+		for (double element : elements) {
+			output.append(del);
+			output.append(myDF.format(element));
+			del = delimiter;
+		}
+		return output.toString();
+	}
+
+	// getters and setters
+	public final double[] getElements() {
+		return elements;
+	}
+
+	public final void setElements(double[] elements) {
+		this.elements = elements;
+	}
+
+	
+}

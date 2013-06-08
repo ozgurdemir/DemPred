@@ -1,0 +1,177 @@
+package dempred.datastructure;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import dempred.featureselection.FeatureSubset;
+import dempred.fmath.FVector;
+import dempred.fmath.FVectorMetric;
+
+
+public class DatasetGenerator {
+
+	public static <T extends Datapoint> List<Dataset<T>> generateDiverse(Dataset<T> dataset, double cutoff) {
+		boolean[] flag = new boolean[dataset.size()];
+		Arrays.fill(flag, true);
+		Dataset<T> mainDataset = new Dataset<T>();
+		Dataset<T> foldDataset = new Dataset<T>();
+		T datapoint1 = null;
+		T datapoint2 = null;
+		double distance;
+		double minDistance;
+		int minIndex = 0;
+		T minDatapoint = null;
+		for (int i = 0; i < dataset.size(); ++i) {
+			minDistance = Double.POSITIVE_INFINITY;
+			if (!flag[i])
+				continue;
+			for (int j = i; j < dataset.size(); ++j) {
+				datapoint1 = dataset.getDatapoint(i);
+				datapoint2 = dataset.getDatapoint(j);
+				distance = FVectorMetric.euclidean(datapoint1.getFeatureVector(), datapoint2.getFeatureVector());
+				if (distance < minDistance && datapoint1.getGroup() != datapoint2.getGroup() && flag[j]) {
+					minDistance = distance;
+					minDatapoint = datapoint2;
+					minIndex = j;
+				}
+			}
+			mainDataset.addDatapoint(datapoint1);
+			if (minDistance < cutoff) {
+				flag[minIndex] = false;
+				foldDataset.addDatapoint(minDatapoint);
+			}
+		}
+		ArrayList<Dataset<T>> resultDatasets = new ArrayList<Dataset<T>>(2);
+		resultDatasets.add(mainDataset);
+		resultDatasets.add(foldDataset);
+		return resultDatasets;
+	}
+
+	public static <T extends Datapoint> Dataset<T> getMissclassified(Dataset<T> dataset) {
+		Dataset<T> resultDataset = new Dataset<T>();
+		for (T datapoint : dataset.getDatapoints()) {
+			if (datapoint.getGroup() != datapoint.getPredictedGroup())
+				resultDataset.addDatapoint(datapoint);
+		}
+		return resultDataset;
+	}
+
+	public static ArrayList<Integer> getMissclassifiedIndices(Dataset<?> dataset) {
+		ArrayList<Integer> indices = new ArrayList<Integer>(dataset.size());
+		int i = 0;
+		for (Datapoint datapoint : dataset.getDatapoints()) {
+			++i;
+			if (datapoint.getPredictedGroup() != datapoint.getGroup())
+				indices.add(i);
+		}
+		return indices;
+	}
+
+	public static <T extends Datapoint> Dataset<T> findNearest(Dataset<T> dataset1, Dataset<T> dataset2) {
+		Dataset<T> resultDataset = new Dataset<T>();
+		double distance;
+		double minDistance;
+		T minDatapoint = null;
+		for (T datapoint1 : dataset1.getDatapoints()) {
+			minDistance = Double.POSITIVE_INFINITY;
+			for (T datapoint2 : dataset2.getDatapoints()) {
+				distance = FVectorMetric.euclidean(datapoint1.getFeatureVector(), datapoint2.getFeatureVector());
+				if (distance < minDistance) {
+					minDistance = distance;
+					minDatapoint = datapoint2;
+				}
+			}
+			resultDataset.addDatapoint(datapoint1);
+			resultDataset.addDatapoint(minDatapoint);
+		}
+		return resultDataset;
+	}
+
+	public static <T extends Datapoint> Dataset<T> join(Dataset<T> dataset1, Dataset<T> dataset2) {
+		Dataset<T> resultDataset = new Dataset<T>();
+		resultDataset.setName(dataset1.getName() + " JOINED WITH " + dataset2.getName());
+		for (T datapoint1 : dataset1.getDatapoints())
+			resultDataset.addDatapoint(datapoint1);
+		for (T datapoint2 : dataset2.getDatapoints())
+			resultDataset.addDatapoint(datapoint2);
+		return resultDataset;
+	}
+
+	public static <T extends Datapoint> Dataset<T> add(Dataset<T> dataset1, Dataset<T> dataset2) {
+		for (T datapoint2 : dataset2.getDatapoints())
+			dataset1.addDatapoint(datapoint2);
+		return dataset1;
+	}
+
+	public static Dataset<Datapoint> addBaseInfoOnly(Dataset<Datapoint> dataset1, Dataset<?> dataset2) {
+		for (Datapoint datapoint2 : dataset2.getDatapoints()) {
+			Datapoint datapoint = new Datapoint();
+			datapoint.setGroup(datapoint2.getGroup());
+			datapoint.setPredictedGroup(datapoint2.getPredictedGroup());
+			datapoint.setPredictedValue(datapoint2.getPredictedValue());
+			datapoint.setValue(datapoint2.getValue());
+			datapoint.setWeight(datapoint2.getWeight());
+			datapoint.setComment(datapoint2.getComment());
+			dataset1.addDatapoint(datapoint);
+		}
+		return dataset1;
+	}
+
+	public static <T extends Datapoint> ArrayList<Dataset<T>> split(Dataset<T> dataset, int number) {
+		return split(dataset, ((double) number / dataset.size()));
+	}
+
+	public static <T extends Datapoint> ArrayList<Dataset<T>> split(Dataset<T> dataset, double ratio) {
+		Dataset<T> splitted1 = new Dataset<T>();
+		splitted1.setName(dataset.getName() + " splitted1");
+		splitted1.setComment(dataset.getComment());
+		Dataset<T> splitted2 = new Dataset<T>();
+		splitted2.setName(dataset.getName() + " splitted2");
+		splitted2.setComment(dataset.getComment());
+		int numSplitted = (int) Math.round(ratio * dataset.size());
+		ArrayList<T> completeList = new ArrayList<T>(dataset.size());
+		completeList.addAll(dataset.getDatapoints());
+		Collections.shuffle(completeList);
+		for (int i = 0; i < dataset.size(); ++i) {
+			if (i < numSplitted)
+				splitted1.addDatapoint(completeList.get(i));
+			else
+				splitted2.addDatapoint(completeList.get(i));
+		}
+		ArrayList<Dataset<T>> result = new ArrayList<Dataset<T>>();
+		result.add(splitted1);
+		result.add(splitted2);
+		return result;
+	}
+
+	public static <T extends Datapoint> Dataset<T> getGroup(Dataset<T> dataset, int group) {
+		Dataset<T> resultDataset = new Dataset<T>();
+		resultDataset.setName(dataset.getName() + " ONLY GROUP: " + group);
+		for (T datapoint : dataset.getDatapoints()) {
+			if (datapoint.getGroup() == group)
+				resultDataset.addDatapoint(datapoint);
+		}
+		return resultDataset;
+	}
+
+	public static <T extends Datapoint> Dataset<T> generateSubset(Dataset<T> dataset, FeatureSubset subset) {
+		Dataset<T> returnDataset = new Dataset<T>();
+		returnDataset.setName(dataset.getName() + "-Subset");
+		returnDataset.setComment("Generated from a feature subset of the Dataset: " + dataset.getName());
+		int numFeatures = subset.size();
+		for (int i = 0; i < dataset.size(); ++i) {
+			T originalDatapoint = dataset.getDatapoint(i);
+			T datapoint = (T) originalDatapoint.clone();
+			FVector featureVector = new FVector(numFeatures);
+			int index = 0;
+			for (int featureIndex : subset.getFeatureIndices())
+				featureVector.set(index++, originalDatapoint.getFeatureAt(featureIndex));
+			datapoint.setFeatureVector(featureVector);
+			returnDataset.addDatapoint(datapoint);
+		}
+		return returnDataset;
+	}
+
+}

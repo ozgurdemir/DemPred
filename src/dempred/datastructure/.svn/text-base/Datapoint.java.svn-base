@@ -1,0 +1,186 @@
+package dempred.datastructure;
+
+import java.util.Comparator;
+
+import dempred.fmath.FVector;
+
+
+public class Datapoint implements Cloneable {
+
+	protected String comment = "";
+	protected Integer group;
+	protected double weight = Double.NaN;
+	protected double value = Double.NaN;
+	protected Integer predictedGroup;
+	protected double predictedValue = Double.NaN;
+	protected FVector featureVector;
+	protected boolean extended;
+
+	public Datapoint() {
+		featureVector = new FVector(0);
+		extended = false;
+	}
+
+	public Datapoint(int dim) {
+		this.featureVector = new FVector(dim);
+	}
+
+	public final int getNumFeatures() {
+		return featureVector.size();
+	}
+
+	public boolean hasGroup() {
+		return (this.group!=null);
+	}
+
+	public final void setFeatureAt(int index, Double feature) {
+		featureVector.set(index, feature);
+	}
+
+	public final double getFeatureAt(int index) {
+		return featureVector.get(index);
+	}
+
+	public final Integer getGroup() {
+		return group;
+	}
+
+	public final void setGroup(Integer group) {
+		this.group = group;
+	}
+
+	public final FVector getFeatureVector() {
+		return featureVector;
+	}
+
+	public final void setFeatureVector(FVector features) {
+		this.featureVector = features;
+	}
+
+	public final Integer getPredictedGroup() {
+		return predictedGroup;
+	}
+
+	public final void setPredictedGroup(Integer classification) {
+		this.predictedGroup = classification;
+	}
+
+	public final String getComment() {
+		return comment;
+	}
+
+	public final void setComment(String comment) {
+		this.comment = comment;
+	}
+
+	public String toString() {
+		String output = String.format("%s,%d,%.4f,%.4f,%d,%.4f --> %s", comment, group, weight, value, predictedGroup, predictedValue, featureVector.toString());
+		return output;
+	}
+
+	public String toStringShort() {
+		String output = String.format("%s,%d,%.4f,%.4f,%d,%.4f --> %d features", comment, group, weight, value, predictedGroup, predictedValue, featureVector.size());
+		return output;
+	}
+
+	public Datapoint clone() {
+		try {
+			Datapoint newDatapoint = (Datapoint) super.clone();
+			newDatapoint.featureVector = this.featureVector.clone();
+			return newDatapoint;
+		} catch (CloneNotSupportedException e) {
+			System.out.println("Clone not supported!");
+			return null;
+		}
+	}
+
+	public final boolean isExtended() {
+		return extended;
+	}
+
+	public final void setExtended(boolean extended) {
+		this.extended = extended;
+	}
+
+	public final double getWeight() {
+		return weight;
+	}
+
+	public final void setWeight(double weight) {
+		this.weight = weight;
+	}
+
+	public final double getValue() {
+		return value;
+	}
+
+	public final void setValue(double value) {
+		this.value = value;
+	}
+
+	public final double getPredictedValue() {
+		return predictedValue;
+	}
+
+	public final void setPredictedValue(double predictedValue) {
+		this.predictedValue = predictedValue;
+	}
+
+	// ******************************
+	// interne klasse zum sortieren
+	public static class ValueComparatorAsc implements Comparator<Datapoint> {
+		public int compare(Datapoint a, Datapoint b) {
+			if (a.value < b.value)
+				return -1;
+			else if (a.value > b.value)
+				return 1;
+			else
+				return 0;
+		}
+	}
+
+	public static class ValueComparatorDesc implements Comparator<Datapoint> {
+		public int compare(Datapoint a, Datapoint b) {
+			if (a.value < b.value)
+				return 1;
+			else if (a.value > b.value)
+				return -1;
+			else
+				return 0;
+		}
+	}
+
+	public static class PredictedValueComparatorAsc implements Comparator<Datapoint> {
+		public int compare(Datapoint a, Datapoint b) {
+			if (a.predictedValue < b.predictedValue)
+				return -1;
+			else if (a.predictedValue > b.predictedValue)
+				return 1;
+			else
+				return 0;
+		}
+	}
+
+	public static class PredictedValueComparatorDesc implements Comparator<Datapoint> {
+		public int compare(Datapoint a, Datapoint b) {
+			if (a.predictedValue < b.predictedValue)
+				return 1;
+			else if (a.predictedValue > b.predictedValue)
+				return -1;
+			else
+				return 0;
+		}
+	}
+
+	public static class ClassificationValueComparatorDesc implements Comparator<Datapoint> {
+		public int compare(Datapoint a, Datapoint b) {
+			if (a.predictedValue < b.predictedValue)
+				return 1;
+			else if (a.predictedValue > b.predictedValue)
+				return -1;
+			else
+				return 0;
+		}
+	}
+
+}

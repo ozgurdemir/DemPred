@@ -1,0 +1,16 @@
+package dempred.kernels;
+
+import java.io.Serializable;
+
+import dempred.fmath.FVector;
+
+
+public class SimpleKernel implements KernelInterface, Serializable {
+
+	private static final long serialVersionUID = -1949078538832518186L;
+
+	public double evaluate(FVector a, FVector b) {
+		return a.scalarProduct(b);
+	}
+
+}
