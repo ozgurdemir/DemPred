@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: demPredict
-Bundle-SymbolicName: demPRED
+Bundle-SymbolicName: DemPred
 Bundle-Version: 1.0.0
 Bundle-ClassPath: demPredict.jar,
  odemir/workspace/externallibs/iText/iText-2.1.4.jar,
