@@ -7,13 +7,13 @@ import java.util.Arrays;
 import dempred.datastructure.Dataset;
 import dempred.datastructure.DatasetGenerator;
 import dempred.datastructure.DatasetManipulator;
-import dempred.math.SimpleVector;
+import dempred.math.DenseVector;
 import dempred.math.VectorMetric;
 
 public class Distribution {
 	
 	public static double[] getFeatSimilarity(Dataset<?> dataset){
-		SimpleVector[] featureVectors = DatasetManipulator.getFeatureVectors(dataset);
+		DenseVector[] featureVectors = DatasetManipulator.getFeatureVectors(dataset);
 		int numFeatures = dataset.numFeatures();
 		int total=((numFeatures-1)*numFeatures)/2;
 		int oldPercent=-1;

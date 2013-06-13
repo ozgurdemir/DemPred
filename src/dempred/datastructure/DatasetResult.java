@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import dempred.losslunction.LossFunctionInterface;
-import dempred.math.SimpleVector;
+import dempred.math.DenseVector;
 import dempred.math.VectorInterface;
 import dempred.math.VectorMetric;
 import dempred.transformer.NoTransformation;
@@ -143,8 +143,8 @@ public class DatasetResult {
 	 * @return the double
 	 */
 	public static double pcc(Dataset<?> dataset, TransformationFunctionInterface transformationFunction) {
-		VectorInterface measuredValues = new SimpleVector(dataset.size());
-		VectorInterface predictedValues = new SimpleVector(dataset.size());
+		VectorInterface measuredValues = new DenseVector(dataset.size());
+		VectorInterface predictedValues = new DenseVector(dataset.size());
 		for (int i = 0; i < dataset.size(); ++i) {
 			Datapoint datapoint = dataset.getDatapoint(i);
 			measuredValues.set(i, transformationFunction.transform(datapoint.getValue()));

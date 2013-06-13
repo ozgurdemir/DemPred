@@ -6,7 +6,7 @@ import java.io.FileReader;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-import dempred.math.SimpleVector;
+import dempred.math.DenseVector;
 
 
 /**
@@ -51,7 +51,7 @@ public class DatasetReader {
 				double[] featureVector = new double[splittet.length - featureIndex];
 				for (int i = featureIndex; i < splittet.length; ++i)
 					featureVector[i - featureIndex] = Double.parseDouble(splittet[i]);
-				datapoint.setFeatureVector(new SimpleVector(featureVector));
+				datapoint.setFeatureVector(new DenseVector(featureVector));
 				dataset.addDatapoint(datapoint);
 			}
 		}

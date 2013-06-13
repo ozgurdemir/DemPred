@@ -9,7 +9,7 @@ import dempred.bfgs.LBFGS.ExceptionWithIflag;
 import dempred.datastructure.Datapoint;
 import dempred.datastructure.Dataset;
 import dempred.loggingtools.LoggerTools;
-import dempred.math.SimpleVector;
+import dempred.math.DenseVector;
 import dempred.math.VectorInterface;
 import dempred.rprop.IRpropMinus;
 import dempred.rprop.RpropInterface;
@@ -75,7 +75,7 @@ public class WrapperDual<T extends Datapoint> extends AbstractKernelClassifier<T
 			else
 				gradient[i] = a.get(i) + weight_minus * dweight * lossFunction.g_deriv(predictTrainingPoint(a, i, kernelMatrix), datapoint.getValue(), datapoint);
 		}
-		return new SimpleVector(gradient);
+		return new DenseVector(gradient);
 	}
 
 	public final double b_deriv(VectorInterface a, Dataset<T> dataset, double[][] kernelMatrix) {
@@ -126,7 +126,7 @@ public class WrapperDual<T extends Datapoint> extends AbstractKernelClassifier<T
 		int numDatapoints = dataset.size();
 		RpropInterface rprop = new IRpropMinus(numDatapoints, 0.001);
 		IRpropMinus rpropOffset = new IRpropMinus(1, 0.001);
-		alpha = new SimpleVector(numDatapoints, 0.0);
+		alpha = new DenseVector(numDatapoints, 0.0);
 		int LoggerLevel = LoggerTools.getLevel(logger).intValue();
 		int i = 0;
 		VectorInterface g = alpha_deriv(alpha, dataset, kernelMatrix);
@@ -145,7 +145,7 @@ public class WrapperDual<T extends Datapoint> extends AbstractKernelClassifier<T
 
 	public void learnBFGS(Dataset<T> dataset, double[][] kernelMatrix) throws ExceptionWithIflag {
 		int n = dataset.size();
-		alpha = new SimpleVector(n, 0.0);
+		alpha = new DenseVector(n, 0.0);
 		int LoggerLevel = LoggerTools.getLevel(logger).intValue();
 		int i = 0;
 		int[] iflag = { 0 };

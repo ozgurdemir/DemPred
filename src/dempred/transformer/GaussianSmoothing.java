@@ -1,6 +1,6 @@
 package dempred.transformer;
 
-import dempred.math.SimpleVector;
+import dempred.math.DenseVector;
 import dempred.math.VectorInterface;
 
 public class GaussianSmoothing {
@@ -26,7 +26,7 @@ public class GaussianSmoothing {
 			weights[i] = gauss(Math.abs(x[i] - value), 0.5, 0.0);
 			weighting += weights[i];
 		}
-		VectorInterface weightVector = new SimpleVector(weights);
+		VectorInterface weightVector = new DenseVector(weights);
 		double result = 0.0;
 		for (int i = 0; i < x.length; ++i) {
 			weights[i] /= weighting;

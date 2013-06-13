@@ -9,7 +9,7 @@ import dempred.chart.Histogramm;
 import dempred.chart.SimpleLineChart;
 import dempred.datastructure.Datapoint;
 import dempred.datastructure.Dataset;
-import dempred.math.SimpleVector;
+import dempred.math.DenseVector;
 import dempred.math.VectorInterface;
 
 public class GaussTransformation implements TransformationFunctionInterface, Serializable {
@@ -30,7 +30,7 @@ public class GaussTransformation implements TransformationFunctionInterface, Ser
 
 	public GaussTransformation(Dataset<?> dataset) {
 		int numDatapoints = dataset.size();
-		VectorInterface regressionValues = new SimpleVector(numDatapoints);
+		VectorInterface regressionValues = new DenseVector(numDatapoints);
 		for (int i = 0; i < numDatapoints; ++i)
 			regressionValues.set(i, dataset.getDatapoint(i).getValue());
 		Arrays.sort(regressionValues.getElements());

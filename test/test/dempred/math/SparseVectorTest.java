@@ -6,7 +6,7 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
-import dempred.math.SimpleVector;
+import dempred.math.DenseVector;
 import dempred.math.SparseVector;
 
 public class SparseVectorTest extends TestCase {

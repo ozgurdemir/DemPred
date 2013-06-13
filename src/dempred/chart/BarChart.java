@@ -22,7 +22,7 @@ public class BarChart {
 	private boolean legend;
 	private PlotOrientation orientation;
 
-	public BarChart(String title, String xAxisTitle, String yAxisTitle, String[] names, double[] values, boolean legend) {
+	public BarChart(String title, String xAxisTitle, String yAxisTitle, String[] names, double[] values, boolean legend, PlotOrientation orientation) {
 		super();
 		this.names = names;
 		this.values = values;
@@ -30,22 +30,13 @@ public class BarChart {
 		this.legend = legend;
 		this.xAxisTitle = xAxisTitle;
 		this.yAxisTitle = yAxisTitle;
+		this.orientation = orientation;
 	}
 
 	public JFreeChart generateChart() {
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-		dataset.addValue(23.0, "Series 1", "London");
-		dataset.addValue(14.0, "Series 1", "New York");
-		dataset.addValue(14.0, "Series 1", "Istanbul");
-		dataset.addValue(14.0, "Series 1", "Cairo");
-		dataset.addValue(13.0, "Series 2", "London");
-		dataset.addValue(19.0, "Series 2", "New York");
-		dataset.addValue(19.0, "Series 2", "Istanbul");
-		dataset.addValue(19.0, "Series 2", "Cairo");
-		dataset.addValue(7.0, "Series 3", "London");
-		dataset.addValue(9.0, "Series 3", "New York");
-		dataset.addValue(9.0, "Series 3", "Istanbul");
-		dataset.addValue(9.0, "Series 3", "Cairo");
+		for (int i = 0; i < names.length; ++i)
+			dataset.addValue(values[i], "Series 1", names[i]);
 
 		JFreeChart chart = ChartFactory.createBarChart(title, xAxisTitle, yAxisTitle, dataset, orientation, legend, false, false);
 		CategoryPlot plot = chart.getCategoryPlot();
@@ -115,7 +106,5 @@ public class BarChart {
 	public final void setOrientation(PlotOrientation orientation) {
 		this.orientation = orientation;
 	}
-	
-	
 
 }

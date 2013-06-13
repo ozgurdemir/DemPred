@@ -8,7 +8,7 @@ import dempred.classifier.WrapperPrimal;
 import dempred.datastructure.Datapoint;
 import dempred.datastructure.Dataset;
 import dempred.datastructure.DatasetResult;
-import dempred.math.SimpleVector;
+import dempred.math.DenseVector;
 import dempred.math.VectorInterface;
 import dempred.resampling.CrossValidation;
 import dempred.resampling.ResamplingErrorInterface;
@@ -91,7 +91,7 @@ public class LinearBackwardSelection {
 			// berechne effect obj der features
 			// rank = classifier.effectObjFunc(trainset).divScalar(trainset.size());
 			rank = classifier.effectObjFunc(trainset);
-			VectorInterface rankGen = new SimpleVector(trainset.numFeatures(), 0.0);
+			VectorInterface rankGen = new DenseVector(trainset.numFeatures(), 0.0);
 			crossVal.generateFolds(numFolds);
 			for (int foldNumber = 0; foldNumber < numFolds; ++foldNumber) {
 				logger.fine(String.format("estimating generalization performance fold:%d of %d", foldNumber + 1, numFolds));

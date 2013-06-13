@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import dempred.featureselection.FeatureSubset;
-import dempred.math.SimpleVector;
+import dempred.math.DenseVector;
 import dempred.math.VectorMetric;
 
 
@@ -270,7 +270,7 @@ public class DatasetGenerator {
 		for (int i = 0; i < dataset.size(); ++i) {
 			T originalDatapoint = dataset.getDatapoint(i);
 			T datapoint = (T) originalDatapoint.clone();
-			SimpleVector featureVector = new SimpleVector(numFeatures);
+			DenseVector featureVector = new DenseVector(numFeatures);
 			int index = 0;
 			for (int featureIndex : subset.getFeatureIndices())
 				featureVector.set(index++, originalDatapoint.getFeatureAt(featureIndex));

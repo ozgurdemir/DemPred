@@ -7,7 +7,7 @@ import dempred.datastructure.Datapoint;
 import dempred.datastructure.Dataset;
 import dempred.grouper.GrouperInterface;
 import dempred.losslunction.LossFunctionInterface;
-import dempred.math.SimpleVector;
+import dempred.math.DenseVector;
 import dempred.math.VectorInterface;
 
 // TODO: Auto-generated Javadoc
@@ -134,8 +134,8 @@ public abstract class AbstractLinearClassifier<T extends Datapoint> implements C
 	 * @return the gradient of the objective function without regularization term.
 	 */
 	public final VectorInterface L_deriv(VectorInterface w, Dataset<T> dataset) {
-		VectorInterface sum_neg = new SimpleVector(w.size(), 0.0);
-		VectorInterface sum_pos = new SimpleVector(w.size(), 0.0);
+		VectorInterface sum_neg = new DenseVector(w.size(), 0.0);
+		VectorInterface sum_pos = new DenseVector(w.size(), 0.0);
 		double dweight = 1.0;
 		int index=0;
 		for (T datapoint : dataset.getDatapoints()) {
@@ -238,7 +238,7 @@ public abstract class AbstractLinearClassifier<T extends Datapoint> implements C
 			weight_minus = (1.0 - w_plus) / dataset.groupQuantity(-1);
 		}
 		ArrayList<Double> tempVec = new ArrayList<Double>(dataset.size() - 1);
-		VectorInterface effectVec = new SimpleVector(dataset.numFeatures() - 1);
+		VectorInterface effectVec = new DenseVector(dataset.numFeatures() - 1);
 		for (T datapoint : dataset.getDatapoints()) {
 			if (groupAveraging && datapoint.getGroup() == 1)
 				sum_pos += lossFunction.g(f(datapoint.getFeatureVector(), weight), datapoint.getValue(), datapoint);
@@ -274,7 +274,7 @@ public abstract class AbstractLinearClassifier<T extends Datapoint> implements C
 	 * @throws Exception the exception
 	 */
 	public final VectorInterface effectObjRetrain(Dataset<T> dataset) throws Exception {
-		VectorInterface rank = new SimpleVector(dataset.numFeatures());
+		VectorInterface rank = new DenseVector(dataset.numFeatures());
 		dataset.extend(1.0);
 		double with_weight = L(weight, dataset);
 		dataset.reduce();
@@ -302,8 +302,8 @@ public abstract class AbstractLinearClassifier<T extends Datapoint> implements C
 	 * @throws Exception the exception
 	 */
 	public final VectorInterface[] effectObjRetrain(Dataset<T> trainset, Dataset<T> testset) throws Exception {
-		VectorInterface rankTrain = new SimpleVector(trainset.numFeatures());
-		VectorInterface rankTest = new SimpleVector(trainset.numFeatures());
+		VectorInterface rankTrain = new DenseVector(trainset.numFeatures());
+		VectorInterface rankTest = new DenseVector(trainset.numFeatures());
 		trainset.extend(1.0);
 		testset.extend(1.0);
 		double with_weight_train = L(weight, trainset);

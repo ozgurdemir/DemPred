@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class SimpleVector implements Cloneable, Serializable, VectorInterface {
+public class DenseVector implements Cloneable, Serializable, VectorInterface {
 
 	/**
 	 * 
@@ -15,21 +15,21 @@ public class SimpleVector implements Cloneable, Serializable, VectorInterface {
 	private double[] elements;
 
 	// ********************konstruktoren
-	public SimpleVector(double[] elements) {
+	public DenseVector(double[] elements) {
 		this.elements = elements;
 	}
 
-	public SimpleVector(int[] elements) {
+	public DenseVector(int[] elements) {
 		this.elements = new double[elements.length];
 		for (int i = 0; i < elements.length; ++i)
 			this.elements[i] = elements[i];
 	}
 
-	public SimpleVector(int dim) {
+	public DenseVector(int dim) {
 		this.elements = new double[dim];
 	}
 
-	public SimpleVector(int dim, double init) {
+	public DenseVector(int dim, double init) {
 		this.elements = new double[dim];
 		Arrays.fill(this.elements, init);
 	}
@@ -71,7 +71,7 @@ public class SimpleVector implements Cloneable, Serializable, VectorInterface {
 	 * @see dempred.math.VectorInterface#extendByOne(double)
 	 */
 	@Override
-	public SimpleVector extendByOne(double value) {
+	public DenseVector extendByOne(double value) {
 		double[] newElements = new double[this.elements.length + 1];
 		System.arraycopy(this.elements, 0, newElements, 0, this.elements.length);
 		newElements[newElements.length - 1] = value;
@@ -85,7 +85,7 @@ public class SimpleVector implements Cloneable, Serializable, VectorInterface {
 	 * @see dempred.math.VectorInterface#reduceByOne()
 	 */
 	@Override
-	public SimpleVector reduceByOne() {
+	public DenseVector reduceByOne() {
 		double[] newElements = new double[this.elements.length - 1];
 		System.arraycopy(this.elements, 0, newElements, 0, this.elements.length - 1);
 		this.elements = newElements;
@@ -137,7 +137,7 @@ public class SimpleVector implements Cloneable, Serializable, VectorInterface {
 	 * @see dempred.math.VectorInterface#sign()
 	 */
 	@Override
-	public SimpleVector sign() {
+	public DenseVector sign() {
 		for (int i = 0; i < this.elements.length; ++i) {
 			this.elements[i] = Math.signum(this.elements[i]);
 		}
@@ -150,7 +150,7 @@ public class SimpleVector implements Cloneable, Serializable, VectorInterface {
 	 * @see dempred.math.VectorInterface#abs()
 	 */
 	@Override
-	public SimpleVector abs() {
+	public DenseVector abs() {
 		for (int i = 0; i < this.elements.length; ++i)
 			this.elements[i] = Math.abs(this.elements[i]);
 		return this;
@@ -358,7 +358,7 @@ public class SimpleVector implements Cloneable, Serializable, VectorInterface {
 	 * @see dempred.math.VectorInterface#mulMatrix(dempred.math.SimpleMatrix)
 	 */
 	@Override
-	public final SimpleVector mulMatrix(SimpleMatrix mat) throws IllegalArgumentException {
+	public final DenseVector mulMatrix(SimpleMatrix mat) throws IllegalArgumentException {
 		if (mat.numRows() != this.size())
 			throw new IllegalArgumentException("Matrix(" + mat.numRows() + ") and vector(" + this.size() + ") have different length!");
 		double[] oldVector = this.elements.clone();
@@ -396,10 +396,10 @@ public class SimpleVector implements Cloneable, Serializable, VectorInterface {
 	 * @see dempred.math.VectorInterface#addVector(dempred.math.SimpleVector)
 	 */
 	@Override
-	public final SimpleVector addVector(VectorInterface b) throws IllegalArgumentException {
+	public final DenseVector addVector(VectorInterface b) throws IllegalArgumentException {
 		if (this.size() != b.size())
 			throw new IllegalArgumentException("Vectors have different number of elements: " + this.elements.length + " and " + b.size());
-		if (b instanceof SimpleVector) {
+		if (b instanceof DenseVector) {
 			for (int i = 0; i < elements.length; ++i)
 				this.elements[i] += b.get(i);
 		} else if (b instanceof SparseVector) {
@@ -421,7 +421,7 @@ public class SimpleVector implements Cloneable, Serializable, VectorInterface {
 	 * @see dempred.math.VectorInterface#subVector(dempred.math.SimpleVector)
 	 */
 	@Override
-	public final SimpleVector subVector(VectorInterface b) {
+	public final DenseVector subVector(VectorInterface b) {
 		if (this.size() != b.size())
 			throw new IllegalArgumentException("Vectors have different number of elements: " + this.elements.length + " and " + b.size());
 		for (int i = 0; i < elements.length; ++i)
@@ -435,7 +435,7 @@ public class SimpleVector implements Cloneable, Serializable, VectorInterface {
 	 * @see dempred.math.VectorInterface#mulVector(dempred.math.SimpleVector)
 	 */
 	@Override
-	public final SimpleVector mulVector(VectorInterface b) {
+	public final DenseVector mulVector(VectorInterface b) {
 		if (this.size() != b.size())
 			throw new IllegalArgumentException("Vectors have different number of elements: " + this.elements.length + " and " + b.size());
 		for (int i = 0; i < elements.length; ++i)
@@ -449,7 +449,7 @@ public class SimpleVector implements Cloneable, Serializable, VectorInterface {
 	 * @see dempred.math.VectorInterface#divVector(dempred.math.SimpleVector)
 	 */
 	@Override
-	public final SimpleVector divVector(VectorInterface b) throws IllegalArgumentException {
+	public final DenseVector divVector(VectorInterface b) throws IllegalArgumentException {
 		if (this.size() != b.size())
 			throw new IllegalArgumentException("Vectors have different number of elements: " + this.elements.length + " and " + b.size());
 		for (int i = 0; i < elements.length; ++i) {
@@ -466,7 +466,7 @@ public class SimpleVector implements Cloneable, Serializable, VectorInterface {
 	 * @see dempred.math.VectorInterface#powVector(dempred.math.SimpleVector)
 	 */
 	@Override
-	public final SimpleVector powVector(VectorInterface b) {
+	public final DenseVector powVector(VectorInterface b) {
 		if (this.size() != b.size())
 			throw new IllegalArgumentException("Vectors have different number of elements: " + this.elements.length + " and " + b.size());
 		for (int i = 0; i < elements.length; ++i)
@@ -481,7 +481,7 @@ public class SimpleVector implements Cloneable, Serializable, VectorInterface {
 	 * @see dempred.math.VectorInterface#powScalar(double)
 	 */
 	@Override
-	public final SimpleVector powScalar(double scalar) {
+	public final DenseVector powScalar(double scalar) {
 		for (int i = 0; i < elements.length; ++i)
 			this.elements[i] = Math.pow(this.elements[i], scalar);
 		return this;
@@ -493,7 +493,7 @@ public class SimpleVector implements Cloneable, Serializable, VectorInterface {
 	 * @see dempred.math.VectorInterface#divScalarZero(double)
 	 */
 	@Override
-	public final SimpleVector divScalarZero(double scalar) {
+	public final DenseVector divScalarZero(double scalar) {
 		if (scalar == 0)
 			return this;
 		for (int i = 0; i < elements.length; ++i)
@@ -507,7 +507,7 @@ public class SimpleVector implements Cloneable, Serializable, VectorInterface {
 	 * @see dempred.math.VectorInterface#divScalar(double)
 	 */
 	@Override
-	public final SimpleVector divScalar(double scalar) throws IllegalArgumentException {
+	public final DenseVector divScalar(double scalar) throws IllegalArgumentException {
 		if (scalar == 0)
 			throw new IllegalArgumentException("Division by zero!");
 		for (int i = 0; i < elements.length; ++i)
@@ -521,7 +521,7 @@ public class SimpleVector implements Cloneable, Serializable, VectorInterface {
 	 * @see dempred.math.VectorInterface#addScalar(double)
 	 */
 	@Override
-	public final SimpleVector addScalar(double scalar) {
+	public final DenseVector addScalar(double scalar) {
 		for (int i = 0; i < elements.length; ++i)
 			elements[i] += scalar;
 		return this;
@@ -533,7 +533,7 @@ public class SimpleVector implements Cloneable, Serializable, VectorInterface {
 	 * @see dempred.math.VectorInterface#subScalar(double)
 	 */
 	@Override
-	public final SimpleVector subScalar(double scalar) {
+	public final DenseVector subScalar(double scalar) {
 		for (int i = 0; i < elements.length; ++i)
 			elements[i] -= scalar;
 		return this;
@@ -545,7 +545,7 @@ public class SimpleVector implements Cloneable, Serializable, VectorInterface {
 	 * @see dempred.math.VectorInterface#mulScalar(double)
 	 */
 	@Override
-	public final SimpleVector mulScalar(double scalar) {
+	public final DenseVector mulScalar(double scalar) {
 		for (int i = 0; i < elements.length; ++i)
 			elements[i] *= scalar;
 		return this;
@@ -558,7 +558,7 @@ public class SimpleVector implements Cloneable, Serializable, VectorInterface {
 	 * @see dempred.math.VectorInterface#delete(int[])
 	 */
 	@Override
-	public SimpleVector delete(int[] indices) {
+	public DenseVector delete(int[] indices) {
 		Arrays.sort(indices);
 		double[] reducedVector = new double[this.elements.length - indices.length];
 		int indexPointer = 0;
@@ -592,9 +592,9 @@ public class SimpleVector implements Cloneable, Serializable, VectorInterface {
 	 * @see dempred.math.VectorInterface#clone()
 	 */
 	@Override
-	public SimpleVector clone() {
+	public DenseVector clone() {
 		try {
-			SimpleVector cl = (SimpleVector) super.clone();
+			DenseVector cl = (DenseVector) super.clone();
 			cl.setElements(this.elements.clone());
 			return cl;
 		} catch (CloneNotSupportedException e) {

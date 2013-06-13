@@ -12,7 +12,7 @@ import dempred.datastructure.DatasetManipulator;
 import dempred.datastructure.DatasetNormalizer;
 import dempred.featuregeneration.FeatureGeneratorInterface;
 import dempred.grouper.GrouperInterface;
-import dempred.math.SimpleVector;
+import dempred.math.DenseVector;
 import dempred.resampling.ResamplingErrorInterface;
 import dempred.util.Lib;
 
@@ -46,7 +46,7 @@ public class ConsensusClassifier<T extends Datapoint> implements ClassifierInter
 		Dataset<Datapoint> superDataset = new Dataset<Datapoint>();
 		for (T datapoint : dataset.getDatapoints()) {
 			Datapoint superDatapoint = datapoint.clone();
-			superDatapoint.setFeatureVector(new SimpleVector(classifiers.size()));
+			superDatapoint.setFeatureVector(new DenseVector(classifiers.size()));
 			superDataset.addDatapoint(superDatapoint);
 		}
 		List<String> featureNames = new ArrayList<String>(classifiers.size());
@@ -75,7 +75,7 @@ public class ConsensusClassifier<T extends Datapoint> implements ClassifierInter
 		Dataset<Datapoint> superDataset = new Dataset<Datapoint>();
 		for (T datapoint : dataset.getDatapoints()) {
 			Datapoint superDatapoint = datapoint.clone();
-			superDatapoint.setFeatureVector(new SimpleVector(classifiers.size()));
+			superDatapoint.setFeatureVector(new DenseVector(classifiers.size()));
 			superDataset.addDatapoint(superDatapoint);
 		}
 		List<String> featureNames = new ArrayList<String>(classifiers.size());
@@ -101,7 +101,7 @@ public class ConsensusClassifier<T extends Datapoint> implements ClassifierInter
 	public double predict(T datapoint) throws Exception {
 		Datapoint superDatapoint = new Datapoint();
 		superDatapoint = datapoint.clone();
-		superDatapoint.setFeatureVector(new SimpleVector(classifiers.size()));
+		superDatapoint.setFeatureVector(new DenseVector(classifiers.size()));
 		for (int i = 0; i < classifiers.size(); ++i) {
 			generateFeatures(datapoint, i);
 			normalizeTestpoint(datapoint, i);

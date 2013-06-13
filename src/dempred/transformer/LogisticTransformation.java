@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 public class LogisticTransformation implements TransformationFunctionInterface, Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 425795233130057229L;
 	private double alpha;
 
 	public LogisticTransformation() {

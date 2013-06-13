@@ -247,7 +247,7 @@ public class SparseVector implements Cloneable, VectorInterface {
 					++indexB;
 			}
 			return sum;
-		} else if (b instanceof SimpleVector) {
+		} else if (b instanceof DenseVector) {
 			for (int i = 0; i < used; ++i)
 				sum += b.get(keys[i]) * values[i];
 			return sum;

@@ -11,8 +11,9 @@ import dempred.datastructure.Datapoint;
 import dempred.datastructure.Dataset;
 import dempred.datastructure.DatasetManipulator;
 import dempred.grouper.GrouperInterface;
-import dempred.math.SimpleVector;
+import dempred.math.DenseVector;
 import dempred.math.VectorInterface;
+import dempred.transformer.LogisticTransformation;
 
 public class MultiClass<T extends Datapoint> implements ClassifierInterface<T>, Serializable {
 
@@ -56,20 +57,25 @@ public class MultiClass<T extends Datapoint> implements ClassifierInterface<T>, 
 	}
 
 	public void predict(Dataset<T> dataset) throws Exception {
-		SimpleVector predictions;
+		DenseVector predictions;
+		LogisticTransformation tranformation = new LogisticTransformation();
 		for (T datapoint : dataset) {
-			predictions = new SimpleVector(numGroups);
+			predictions = new DenseVector(numGroups);
 			for (int i = 0; i < numGroups; ++i)
 				predictions.set(i, classifiers.get(i).predict(datapoint));
 			int maxIndex = predictions.maxIndex(1)[0];
 			datapoint.setPredictedValue(predictions.get(maxIndex));
 			datapoint.setPredictedGroup(groups[maxIndex]);
+			
+			for(int i = 0; i<predictions.size(); ++i)
+				predictions.set(i, tranformation.transform(predictions.get(i)));
+			logger.fine(predictions.toString());
 		}
 	}
 
 	public double predict(T datapoint) throws Exception {
-		SimpleVector predictions;
-		predictions = new SimpleVector(numGroups);
+		DenseVector predictions;
+		predictions = new DenseVector(numGroups);
 		for (int i = 0; i < numGroups; ++i)
 			predictions.set(i, classifiers.get(i).predict(datapoint));
 		int maxIndex = predictions.maxIndex(1)[0];
@@ -91,5 +97,11 @@ public class MultiClass<T extends Datapoint> implements ClassifierInterface<T>, 
 	public GrouperInterface getGrouper() {
 		return baseClassifier.getGrouper();
 	}
+
+	public ArrayList<ClassifierInterface<T>> getClassifiers() {
+		return classifiers;
+	}
+	
+	
 
 }

@@ -10,7 +10,7 @@ import dempred.bfgs.OWLQNMinimizer;
 import dempred.datastructure.Datapoint;
 import dempred.datastructure.Dataset;
 import dempred.loggingtools.LoggerTools;
-import dempred.math.SimpleVector;
+import dempred.math.DenseVector;
 import dempred.math.VectorInterface;
 import dempred.rprop.IRpropMinus;
 import dempred.rprop.RpropInterface;
@@ -27,7 +27,7 @@ public class WrapperPrimal<T extends Datapoint> extends AbstractLinearClassifier
 	public void learn(Dataset<T> dataset) throws Exception {
 		int numFeatures = dataset.numFeatures() + 1;
 		if (weight == null || weight.size() != numFeatures)
-			weight = new SimpleVector(numFeatures, 0.0);
+			weight = new DenseVector(numFeatures, 0.0);
 		if (solver == 0)
 			learnBFGS(dataset);
 		else if (solver == 1)
@@ -53,7 +53,7 @@ public class WrapperPrimal<T extends Datapoint> extends AbstractLinearClassifier
 		obj.dataset = dataset;
 		double tol = 0.0000001;
 		double[] opt = owlqn.minimize(obj, tol, weight.getElements());
-		weight = new SimpleVector(opt);
+		weight = new DenseVector(opt);
 		dataset.reduce();
 	}
 
@@ -62,11 +62,11 @@ public class WrapperPrimal<T extends Datapoint> extends AbstractLinearClassifier
 		public Dataset<T> dataset;
 
 		public double valueAt(double[] x) {
-			return L_mod(new SimpleVector(x), dataset);
+			return L_mod(new DenseVector(x), dataset);
 		}
 
 		public double[] derivativeAt(double[] x) {
-			return L_mod_deriv(new SimpleVector(x), dataset).getElements();
+			return L_mod_deriv(new DenseVector(x), dataset).getElements();
 		}
 
 		public int domainDimension() {

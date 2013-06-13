@@ -1,6 +1,6 @@
 package dempred.kernels;
 
-import dempred.math.SimpleVector;
+import dempred.math.DenseVector;
 import dempred.math.VectorInterface;
 
 /**

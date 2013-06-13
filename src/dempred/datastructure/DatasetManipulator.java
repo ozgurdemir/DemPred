@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 import dempred.featuregeneration.FeatureGeneratorInterface;
 import dempred.featureselection.FeatureSubset;
 import dempred.grouper.GrouperInterface;
-import dempred.math.SimpleVector;
+import dempred.math.DenseVector;
 import dempred.math.VectorInterface;
 
 /**
@@ -33,7 +33,7 @@ public class DatasetManipulator {
 		int index = 0;
 		for (T datapoint : dataset.getDatapoints()) {
 			logger.fine(String.format("generating features for datapoint %d of %d", ++index, dataset.size()));
-			datapoint.setFeatureVector(new SimpleVector(featureGenerator.generateFeature(datapoint)));
+			datapoint.setFeatureVector(new DenseVector(featureGenerator.generateFeature(datapoint)));
 			numFeatures = datapoint.getNumFeatures();
 		}
 		dataset.initFeatureIndex(numFeatures);
@@ -49,7 +49,7 @@ public class DatasetManipulator {
 	 * @throws Exception the exception
 	 */
 	public static <T extends Datapoint> void generateFeatures(T datapoint, FeatureGeneratorInterface<T> featureGenerator) throws Exception {
-		datapoint.setFeatureVector(new SimpleVector(featureGenerator.generateFeature(datapoint)));
+		datapoint.setFeatureVector(new DenseVector(featureGenerator.generateFeature(datapoint)));
 	}
 
 	/**
@@ -71,7 +71,7 @@ public class DatasetManipulator {
 				for (int j = i; j < d; ++j)
 					squareFeatures[index++] = linearFeatures[i] * linearFeatures[j];
 			}
-			datapoint.setFeatureVector(new SimpleVector(squareFeatures));
+			datapoint.setFeatureVector(new DenseVector(squareFeatures));
 		}
 		dataset.initFeatureIndex(numSquareFeatures);
 		List<String> originalFeatureNames = dataset.getFeatureNames();
@@ -113,7 +113,7 @@ public class DatasetManipulator {
 					featureNames.add(originalFeatureNames.get(featureIndex) + " * " + originalFeatureNames.get(i));
 				}
 			}
-			datapoint.setFeatureVector(new SimpleVector(squareFeatures));
+			datapoint.setFeatureVector(new DenseVector(squareFeatures));
 		}
 		dataset.initFeatureIndex(numSquareFeatures);
 		dataset.setFeatureNames(featureNames);
@@ -135,7 +135,7 @@ public class DatasetManipulator {
 			double[] features = new double[oldFeatures.length + newFeatures.length];
 			System.arraycopy(oldFeatures, 0, features, 0, oldFeatures.length);
 			System.arraycopy(newFeatures, 0, features, oldFeatures.length, newFeatures.length);
-			datapoint.setFeatureVector(new SimpleVector(features));
+			datapoint.setFeatureVector(new DenseVector(features));
 			numFeatures = datapoint.getNumFeatures();
 		}
 		dataset.initFeatureIndex(numFeatures);
@@ -156,7 +156,7 @@ public class DatasetManipulator {
 		double[] features = new double[oldFeatures.length + newFeatures.length];
 		System.arraycopy(oldFeatures, 0, features, 0, oldFeatures.length);
 		System.arraycopy(newFeatures, 0, features, oldFeatures.length, newFeatures.length);
-		datapoint.setFeatureVector(new SimpleVector(features));
+		datapoint.setFeatureVector(new DenseVector(features));
 	}
 
 	/**
@@ -166,13 +166,13 @@ public class DatasetManipulator {
 	 * @param dataset the dataset used to extract the feature vectors
 	 * @return the feature vectors
 	 */
-	public static SimpleVector[] getFeatureVectors(Dataset<?> dataset) {
-		SimpleVector[] featureVectors = new SimpleVector[dataset.numFeatures()];
+	public static DenseVector[] getFeatureVectors(Dataset<?> dataset) {
+		DenseVector[] featureVectors = new DenseVector[dataset.numFeatures()];
 		for (int i = 0; i < featureVectors.length; ++i) {
 			double[] features = new double[dataset.size()];
 			for (int j = 0; j < dataset.size(); ++j)
 				features[j] = dataset.getDatapoint(j).getFeatureAt(i);
-			SimpleVector featureVector = new SimpleVector(features);
+			DenseVector featureVector = new DenseVector(features);
 			featureVectors[i] = featureVector;
 		}
 		return featureVectors;
@@ -184,14 +184,14 @@ public class DatasetManipulator {
 	 * @param dataset the input dataset
 	 * @return a feature HashMap 
 	 */
-	public static Map<String, SimpleVector> getFeatureMap(Dataset<?> dataset) {
-		HashMap<String, SimpleVector> featureMap = new HashMap<String, SimpleVector>(dataset.numFeatures());
+	public static Map<String, DenseVector> getFeatureMap(Dataset<?> dataset) {
+		HashMap<String, DenseVector> featureMap = new HashMap<String, DenseVector>(dataset.numFeatures());
 		List<String> featureNames = dataset.getFeatureNames();
 		for (int i = 0; i < featureNames.size(); ++i) {
 			double[] features = new double[dataset.size()];
 			for (int j = 0; j < dataset.size(); ++j)
 				features[j] = dataset.getDatapoint(j).getFeatureAt(i);
-			SimpleVector featureVector = new SimpleVector(features);
+			DenseVector featureVector = new DenseVector(features);
 			featureMap.put(featureNames.get(i), featureVector);
 		}
 		return featureMap;
@@ -204,14 +204,14 @@ public class DatasetManipulator {
 	 * @param subset the subset of features which should be extracted
 	 * @return the feature vectors
 	 */
-	public static SimpleVector[] getFeatureVectors(Dataset<?> dataset, FeatureSubset subset) {
-		SimpleVector[] featureVectors = new SimpleVector[subset.size()];
+	public static DenseVector[] getFeatureVectors(Dataset<?> dataset, FeatureSubset subset) {
+		DenseVector[] featureVectors = new DenseVector[subset.size()];
 		int index = 0;
 		for (int featureIndex : subset.getFeatureIndices()) {
 			double[] features = new double[dataset.size()];
 			for (int j = 0; j < dataset.size(); ++j)
 				features[j] = dataset.getDatapoint(j).getFeatureAt(featureIndex);
-			SimpleVector featureVector = new SimpleVector(features);
+			DenseVector featureVector = new DenseVector(features);
 			featureVectors[index++] = featureVector;
 		}
 		return featureVectors;
@@ -224,7 +224,7 @@ public class DatasetManipulator {
 	 * @return the class vector
 	 */
 	public static VectorInterface getClassVector(Dataset<?> dataset) {
-		VectorInterface vecY = new SimpleVector(dataset.size());
+		VectorInterface vecY = new DenseVector(dataset.size());
 		int i = 0;
 		for (Datapoint datapoint : dataset.getDatapoints())
 			vecY.set(i++, datapoint.getGroup());
@@ -238,7 +238,7 @@ public class DatasetManipulator {
 	 * @return the value vector
 	 */
 	public static VectorInterface getValueVector(Dataset<?> dataset) {
-		VectorInterface vecY = new SimpleVector(dataset.size());
+		VectorInterface vecY = new DenseVector(dataset.size());
 		int i = 0;
 		for (Datapoint datapoint : dataset.getDatapoints())
 			vecY.set(i++, datapoint.getValue());
@@ -252,7 +252,7 @@ public class DatasetManipulator {
 	 * @return the predicted value vector
 	 */
 	public static VectorInterface getPredictedValueVector(Dataset<?> dataset) {
-		VectorInterface vecY = new SimpleVector(dataset.size());
+		VectorInterface vecY = new DenseVector(dataset.size());
 		int i = 0;
 		for (Datapoint datapoint : dataset.getDatapoints())
 			vecY.set(i++, datapoint.getPredictedValue());
@@ -266,7 +266,7 @@ public class DatasetManipulator {
 	 * @return the weight vector
 	 */
 	public static VectorInterface getWeightVector(Dataset<?> dataset) {
-		VectorInterface vecY = new SimpleVector(dataset.size());
+		VectorInterface vecY = new DenseVector(dataset.size());
 		int i = 0;
 		for (Datapoint datapoint : dataset.getDatapoints())
 			vecY.set(i++, datapoint.getWeight());
@@ -305,7 +305,7 @@ public class DatasetManipulator {
 	 */
 	public static void deleteFeatureVectors(Dataset<?> dataset) {
 		for (Datapoint datapoint : dataset.getDatapoints()) {
-			datapoint.setFeatureVector(new SimpleVector(0));
+			datapoint.setFeatureVector(new DenseVector(0));
 		}
 		dataset.initFeatureIndex(0);
 		dataset.setFeatureNames(null);

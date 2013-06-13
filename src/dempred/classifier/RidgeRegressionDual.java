@@ -7,7 +7,7 @@ import Jama.CholeskyDecomposition;
 import Jama.Matrix;
 import dempred.datastructure.Datapoint;
 import dempred.datastructure.Dataset;
-import dempred.math.SimpleVector;
+import dempred.math.DenseVector;
 
 public class RidgeRegressionDual<T extends Datapoint> extends AbstractKernelClassifier<T> implements ClassifierInterface<T>, Serializable {
 
@@ -18,7 +18,7 @@ public class RidgeRegressionDual<T extends Datapoint> extends AbstractKernelClas
 		logger.fine("learning RidgeRegressionDual");
 		dataset.extend(1.0);
 		int featureSize = dataset.numFeatures();
-		alpha = new SimpleVector(dataset.size(), 0.0);
+		alpha = new DenseVector(dataset.size(), 0.0);
 
 		// K Matrix
 		double obj = 1 - lambda2;
@@ -54,9 +54,9 @@ public class RidgeRegressionDual<T extends Datapoint> extends AbstractKernelClas
 		Matrix M = new Matrix(Btemp);
 
 		// store training points
-		trainVectors = new SimpleVector[dataset.size()];
+		trainVectors = new DenseVector[dataset.size()];
 		for (int i = 0; i < dataset.size(); ++i)
-			trainVectors[i] = new SimpleVector(Xtemp[i]);
+			trainVectors[i] = new DenseVector(Xtemp[i]);
 
 		// CheloskyDecomposition
 		double[][] atemp = new double[dataset.size()][dataset.size()];
@@ -76,7 +76,7 @@ public class RidgeRegressionDual<T extends Datapoint> extends AbstractKernelClas
 		CholeskyDecomposition cholDec = new CholeskyDecomposition(A);
 		Matrix a = cholDec.solve(B);
 		double[][] wtemp = a.transpose().getArray();
-		alpha = new SimpleVector(wtemp[0]);
+		alpha = new DenseVector(wtemp[0]);
 
 		dataset.reduce();
 	}

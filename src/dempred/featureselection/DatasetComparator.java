@@ -2,7 +2,7 @@ package dempred.featureselection;
 
 import dempred.datastructure.Datapoint;
 import dempred.datastructure.Dataset;
-import dempred.math.SimpleVector;
+import dempred.math.DenseVector;
 import dempred.math.VectorInterface;
 import dempred.math.VectorMetric;
 
@@ -11,7 +11,7 @@ public class DatasetComparator {
 	// finde zu jedem datenpunkt in dataset1 den ähnlichsten in dataset2 und
 	// berechne anhand dessen einen feature rank
 	public static VectorInterface compare(Dataset<?> dataset1, Dataset<?> dataset2) throws IllegalArgumentException {
-		VectorInterface rankVector = new SimpleVector(dataset1.numFeatures(), 0.0);
+		VectorInterface rankVector = new DenseVector(dataset1.numFeatures(), 0.0);
 		VectorInterface tempVector;
 		double distance;
 		double minDistance;

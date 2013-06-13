@@ -2,7 +2,7 @@ package dempred.kernels;
 
 import java.io.Serializable;
 
-import dempred.math.SimpleVector;
+import dempred.math.DenseVector;
 import dempred.math.VectorInterface;
 
 /**

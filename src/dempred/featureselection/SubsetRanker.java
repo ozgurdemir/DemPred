@@ -5,7 +5,7 @@ import dempred.datastructure.Datapoint;
 import dempred.datastructure.Dataset;
 import dempred.datastructure.DatasetGenerator;
 import dempred.datastructure.DatasetManipulator;
-import dempred.math.SimpleVector;
+import dempred.math.DenseVector;
 import dempred.math.VectorInterface;
 import dempred.math.VectorMetric;
 import dempred.resampling.ResamplingErrorInterface;
@@ -52,7 +52,7 @@ public class SubsetRanker {
 
 	public static <T extends Datapoint>double similarityold(Dataset<T> dataset, FeatureSubset subset1, FeatureSubset subset2) {
 		VectorInterface[] largeVectors;
-		SimpleVector[] smallVectors;
+		DenseVector[] smallVectors;
 		if (subset1.size() > subset2.size()) {
 			largeVectors = DatasetManipulator.getFeatureVectors(dataset, subset1);
 			smallVectors = DatasetManipulator.getFeatureVectors(dataset, subset2);
@@ -63,7 +63,7 @@ public class SubsetRanker {
 		double score = 0.0;
 		for (VectorInterface feature1 : largeVectors) {
 			double maxSimilarity = Double.NEGATIVE_INFINITY;
-			for (SimpleVector feature2 : smallVectors) {
+			for (DenseVector feature2 : smallVectors) {
 				double temp = Math.pow(VectorMetric.cosine(feature1, feature2), 2);
 				if (temp > maxSimilarity)
 					maxSimilarity = temp;
@@ -79,7 +79,7 @@ public class SubsetRanker {
 		reducedSubset1.getFeatureIndices().removeAll(subset2.getFeatureIndices());
 		reducedSubset2.getFeatureIndices().removeAll(subset1.getFeatureIndices());
 		VectorInterface[] largeVectors;
-		SimpleVector[] smallVectors;
+		DenseVector[] smallVectors;
 		if (reducedSubset1.size() > reducedSubset2.size()) {
 			largeVectors = DatasetManipulator.getFeatureVectors(dataset, reducedSubset1);
 			smallVectors = DatasetManipulator.getFeatureVectors(dataset, reducedSubset2);
@@ -90,7 +90,7 @@ public class SubsetRanker {
 		double score = 0.0;
 		for (VectorInterface feature1 : largeVectors) {
 			double maxSimilarity = Double.NEGATIVE_INFINITY;
-			for (SimpleVector feature2 : smallVectors) {
+			for (DenseVector feature2 : smallVectors) {
 				double temp = Math.pow(VectorMetric.cosine(feature1, feature2), 2);
 				if (temp > maxSimilarity)
 					maxSimilarity = temp;
@@ -102,10 +102,10 @@ public class SubsetRanker {
 
 	public static <T extends Datapoint>double pairwiseMaxCosine(Dataset<T> dataset, FeatureSubset subset1, FeatureSubset subset2) {
 		VectorInterface[] featureVectors1 = DatasetManipulator.getFeatureVectors(dataset, subset1);
-		SimpleVector[] featureVectors2 = DatasetManipulator.getFeatureVectors(dataset, subset2);
+		DenseVector[] featureVectors2 = DatasetManipulator.getFeatureVectors(dataset, subset2);
 		double maxSimilarity = Double.NEGATIVE_INFINITY;
 		for (VectorInterface feature1 : featureVectors1) {
-			for (SimpleVector feature2 : featureVectors2) {
+			for (DenseVector feature2 : featureVectors2) {
 				double temp = Math.pow(VectorMetric.cosine(feature1, feature2), 2);
 				if (temp > maxSimilarity)
 					maxSimilarity = temp;

@@ -30,7 +30,7 @@ public class VectorTools {
 	}
 
 	public static VectorInterface randomVector(int size, double min, double max) {
-		VectorInterface returnVector = new SimpleVector(size);
+		VectorInterface returnVector = new DenseVector(size);
 		for (int i = 0; i < size; ++i)
 			returnVector.set(i, min + (Math.random() * (max - min)));
 		return returnVector;

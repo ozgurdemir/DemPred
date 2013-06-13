@@ -1,7 +1,7 @@
 package dempred.datastructure;
 
 import dempred.featuregeneration.FeatureGeneratorInterface;
-import dempred.math.SimpleVector;
+import dempred.math.DenseVector;
 
 /**
  * A utility class which contains several functions to manipulate a single datapoint
@@ -26,6 +26,6 @@ public class DatapointManipulator {
 		double[] features = new double[oldFeatures.length + newFeatures.length];
 		System.arraycopy(oldFeatures, 0, features, 0, oldFeatures.length);
 		System.arraycopy(newFeatures, 0, features, oldFeatures.length, newFeatures.length);
-		datapoint.setFeatureVector(new SimpleVector(features));
+		datapoint.setFeatureVector(new DenseVector(features));
 	}
 }

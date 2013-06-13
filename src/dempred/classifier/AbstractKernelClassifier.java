@@ -7,7 +7,7 @@ import dempred.datastructure.Dataset;
 import dempred.grouper.GrouperInterface;
 import dempred.kernels.KernelInterface;
 import dempred.losslunction.LossFunctionInterface;
-import dempred.math.SimpleVector;
+import dempred.math.DenseVector;
 import dempred.math.VectorInterface;
 
 /**
@@ -86,7 +86,7 @@ public abstract class AbstractKernelClassifier<T extends Datapoint> implements C
 	 * @return the weight
 	 */
 	public final VectorInterface getWeight() {
-		VectorInterface weight = new SimpleVector(trainVectors[0].size());
+		VectorInterface weight = new DenseVector(trainVectors[0].size());
 		for (int i = 0; i < alpha.size(); ++i)
 			weight.addVector(trainVectors[i].clone().mulScalar(alpha.get(i)));
 		return weight;

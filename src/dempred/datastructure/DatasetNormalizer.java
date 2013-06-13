@@ -3,7 +3,7 @@ package dempred.datastructure;
 import java.io.Serializable;
 import java.util.Arrays;
 
-import dempred.math.SimpleVector;
+import dempred.math.DenseVector;
 import dempred.math.VectorInterface;
 
 // TODO: Auto-generated Javadoc
@@ -18,10 +18,10 @@ public class DatasetNormalizer implements Serializable {
 	private static final long serialVersionUID = 7817284463812821189L;
 	
 	/** The mean vector extracted from the trainings set. */
-	private SimpleVector meanVector;
+	private DenseVector meanVector;
 	
 	/** The std vector extracted from the trainings set. */
-	private SimpleVector stdVector;
+	private DenseVector stdVector;
 	
 	/** The zero indices extracted from the trainings set. */
 	private int[] zeroIndices;
@@ -53,7 +53,7 @@ public class DatasetNormalizer implements Serializable {
 	 * @param stdVector the std vector
 	 * @param zeroIndices the zero indices
 	 */
-	public DatasetNormalizer(SimpleVector meanVector, SimpleVector stdVector, int[] zeroIndices) {
+	public DatasetNormalizer(DenseVector meanVector, DenseVector stdVector, int[] zeroIndices) {
 		super();
 		this.meanVector = meanVector;
 		this.stdVector = stdVector;
@@ -105,8 +105,8 @@ public class DatasetNormalizer implements Serializable {
 	 * @param dataset the dataset
 	 * @return the mean
 	 */
-	public SimpleVector getMean(Dataset<?> dataset) {
-		SimpleVector meanVector = new SimpleVector(dataset.numFeatures(), 0.0);
+	public DenseVector getMean(Dataset<?> dataset) {
+		DenseVector meanVector = new DenseVector(dataset.numFeatures(), 0.0);
 		for (Datapoint datapoint : dataset.getDatapoints()) {
 			meanVector.addVector(datapoint.getFeatureVector());
 		}
@@ -120,7 +120,7 @@ public class DatasetNormalizer implements Serializable {
 	 * @param dataset the dataset
 	 * @param meanVector the mean vector
 	 */
-	public void substractMean(Dataset<?> dataset, SimpleVector meanVector) {
+	public void substractMean(Dataset<?> dataset, DenseVector meanVector) {
 		for (Datapoint datapoint : dataset.getDatapoints()) {
 			datapoint.getFeatureVector().subVector(meanVector);
 		}
@@ -133,9 +133,9 @@ public class DatasetNormalizer implements Serializable {
 	 * @param meanVector the mean vector
 	 * @return the standart
 	 */
-	public SimpleVector getStandart(Dataset<?> dataset, SimpleVector meanVector) {
+	public DenseVector getStandart(Dataset<?> dataset, DenseVector meanVector) {
 		VectorInterface tempVector;
-		SimpleVector sumVector = new SimpleVector(dataset.numFeatures(), 0.0);
+		DenseVector sumVector = new DenseVector(dataset.numFeatures(), 0.0);
 		for (Datapoint datapoint : dataset.getDatapoints()) {
 			tempVector = datapoint.getFeatureVector().clone();
 			tempVector.subVector(meanVector);
@@ -163,7 +163,7 @@ public class DatasetNormalizer implements Serializable {
 	 * @param dataset the dataset
 	 * @param stdVector the std vector
 	 */
-	public void divStandart(Dataset<?> dataset, SimpleVector stdVector) {
+	public void divStandart(Dataset<?> dataset, DenseVector stdVector) {
 		for (Datapoint datapoint : dataset.getDatapoints()) {
 			datapoint.getFeatureVector().divVector(stdVector);
 		}
@@ -229,7 +229,7 @@ public class DatasetNormalizer implements Serializable {
 	 *
 	 * @param meanVector the new mean vector
 	 */
-	public void setMeanVector(SimpleVector meanVector) {
+	public void setMeanVector(DenseVector meanVector) {
 		this.meanVector = meanVector;
 	}
 
@@ -247,7 +247,7 @@ public class DatasetNormalizer implements Serializable {
 	 *
 	 * @param stdVector the new std vector
 	 */
-	public void setStdVector(SimpleVector stdVector) {
+	public void setStdVector(DenseVector stdVector) {
 		this.stdVector = stdVector;
 	}
 

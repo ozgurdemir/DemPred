@@ -6,7 +6,7 @@ import dempred.classifier.AbstractLinearClassifier;
 import dempred.datastructure.Datapoint;
 import dempred.datastructure.Dataset;
 import dempred.datastructure.DatasetNormalizer;
-import dempred.math.SimpleVector;
+import dempred.math.DenseVector;
 import dempred.math.VectorInterface;
 import dempred.resampling.Bootstrap;
 import dempred.resampling.CrossValidation;
@@ -48,7 +48,7 @@ public class GeneralizedRFE<T extends Datapoint> {
 					 rank[nonZeroIndices[i]] += effectObjFold.get(i) + effectObjMain.get(i);
 			}
 		}
-		return new SimpleVector(rank);
+		return new DenseVector(rank);
 	}
 
 	public int[] select(int numDeletions) throws Exception {
@@ -79,7 +79,7 @@ public class GeneralizedRFE<T extends Datapoint> {
 			for (int i = 0; i < effectObjFold.size(); ++i)
 				rank[nonZeroIndices[i]] += 0.632 * effectObjFold.get(i) + 0.368 * effectObjMain.get(i);
 		}
-		return new SimpleVector(rank);
+		return new DenseVector(rank);
 	}
 
 	public int[] select632(int numDeletions) throws Exception {
@@ -110,7 +110,7 @@ public class GeneralizedRFE<T extends Datapoint> {
 			for (int i = 0; i < effectObjFold.size(); ++i)
 				rank[nonZeroIndices[i]] += 0.632 * effectObjFold.get(i) + 0.368 * effectObjMain.get(i);
 		}
-		return new SimpleVector(rank);
+		return new DenseVector(rank);
 	}
 
 	public int[] select632Retrain(int numDeletions) throws Exception {
@@ -133,7 +133,7 @@ public class GeneralizedRFE<T extends Datapoint> {
 		int[] nonZeroIndices = normalizer.getNonZeroIndices();
 		for (int i = 0; i < effectObjFold.size(); ++i)
 			rank[nonZeroIndices[i]] += effectObjFold.get(i) + effectObjMain.get(i);
-		return new SimpleVector(rank);
+		return new DenseVector(rank);
 	}
 
 	public int[] selectFake(int numDeletions) throws Exception {

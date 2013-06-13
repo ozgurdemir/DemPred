@@ -3,7 +3,7 @@ package dempred.datastructure;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import dempred.math.SimpleVector;
+import dempred.math.DenseVector;
 import dempred.math.VectorInterface;
 
 /**
@@ -58,7 +58,7 @@ public class Datapoint implements Cloneable, Serializable {
 	 * Instantiates a new datapoint with no features.
 	 */
 	public Datapoint() {
-		featureVector = new SimpleVector(0);
+		featureVector = new DenseVector(0);
 		extended = false;
 	}
 
@@ -69,7 +69,7 @@ public class Datapoint implements Cloneable, Serializable {
 	 *            the number of features (descriptors) the datapoint should have
 	 */
 	public Datapoint(int dim) {
-		this.featureVector = new SimpleVector(dim);
+		this.featureVector = new DenseVector(dim);
 	}
 
 	/**

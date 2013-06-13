@@ -9,7 +9,7 @@ import Jama.Matrix;
 import dempred.datastructure.Datapoint;
 import dempred.datastructure.Dataset;
 import dempred.losslunction.Mse;
-import dempred.math.SimpleVector;
+import dempred.math.DenseVector;
 
 public class RidgeRegressionPrimal<T extends Datapoint> extends AbstractLinearClassifier<T> implements ClassifierInterface<T>, Cloneable, Serializable {
 
@@ -25,7 +25,7 @@ public class RidgeRegressionPrimal<T extends Datapoint> extends AbstractLinearCl
 		logger.fine("learning RidgeRegressionPrimal");
 		dataset.extend(1.0);
 		int featureSize = dataset.numFeatures();
-		weight = new SimpleVector(featureSize, 0.0);
+		weight = new DenseVector(featureSize, 0.0);
 
 		// K Matrix
 		double obj = 1 - lambda2;
@@ -74,7 +74,7 @@ public class RidgeRegressionPrimal<T extends Datapoint> extends AbstractLinearCl
 		Matrix w = cholDec.solve(B);
 
 		double[][] wtemp = w.transpose().getArray();
-		weight = new SimpleVector(wtemp[0]);
+		weight = new DenseVector(wtemp[0]);
 		dataset.reduce();
 	}
 

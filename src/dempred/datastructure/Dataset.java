@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import dempred.math.SimpleVector;
+import dempred.math.DenseVector;
 
 
 /**
@@ -174,7 +174,7 @@ public class Dataset<T extends Datapoint> implements Cloneable, Serializable, It
 	 */
 	public void keepFeatures(int[] indices) {
 		for (Datapoint datapoint : this.datapoints) {
-			SimpleVector reducedFeatures = new SimpleVector(indices.length);
+			DenseVector reducedFeatures = new DenseVector(indices.length);
 			for (int i = 0; i < indices.length; ++i)
 				reducedFeatures.set(i, datapoint.getFeatureAt(indices[i]));
 			datapoint.setFeatureVector(reducedFeatures);
@@ -198,7 +198,7 @@ public class Dataset<T extends Datapoint> implements Cloneable, Serializable, It
 	public void deleteFeatures(int[] indices) {
 		Arrays.sort(indices);
 		for (Datapoint datapoint : this.datapoints) {
-			SimpleVector reducedFeatures = new SimpleVector(datapoint.getNumFeatures() - indices.length);
+			DenseVector reducedFeatures = new DenseVector(datapoint.getNumFeatures() - indices.length);
 			int indexPointer = 0;
 			int vectorPointer = 0;
 			for (int i = 0; i < datapoint.getNumFeatures(); ++i) {
