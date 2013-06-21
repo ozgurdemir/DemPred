@@ -1,5 +1,5 @@
-package dempred.datastructure;
 
+package dempred.datastructure;
 import java.io.Serializable;
 import java.util.Comparator;
 

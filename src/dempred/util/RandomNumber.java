@@ -6,7 +6,7 @@ public class RandomNumber {
 	private Random random;
 
 	public RandomNumber() {
-		this.random = new Random();
+		this.random = new Random(System.nanoTime());
 	}
 
 	public double gauss(double mean, double std) {
