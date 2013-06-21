@@ -1,8 +1,0 @@
-package dempred.kernels;
-
-import dempred.fmath.FVector;
-
-public interface KernelInterface {
-	
-	public double evaluate(FVector a, FVector b);
-}
