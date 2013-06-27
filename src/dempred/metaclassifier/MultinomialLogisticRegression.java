@@ -7,13 +7,12 @@ import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import dempred.classifier.ClassifierInterface;
-import dempred.datastructure.Datapoint;
 import dempred.datastructure.Dataset;
+import dempred.datastructure.MultigroupDatapoint;
 import dempred.grouper.GrouperInterface;
 import dempred.math.DenseVector;
-import dempred.transformer.LogisticTransformation;
 
-public class MultinomialLogisticRegression<T extends Datapoint> implements ClassifierInterface<T>, Serializable {
+public class MultinomialLogisticRegression<T extends MultigroupDatapoint> implements ClassifierInterface<T>, Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(MultinomialLogisticRegression.class.getName());
@@ -96,8 +95,7 @@ public class MultinomialLogisticRegression<T extends Datapoint> implements Class
 			int maxIndex = predictions.maxIndex(1)[0];
 			datapoint.setPredictedValue(predictions.get(maxIndex));
 			datapoint.setPredictedGroup(groups[maxIndex]);
-
-			logger.fine(predictions.toString());
+			datapoint.setPredictedValues(predictions);
 		}
 	}
 

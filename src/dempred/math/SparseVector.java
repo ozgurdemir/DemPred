@@ -48,6 +48,10 @@ public class SparseVector implements Cloneable, VectorInterface {
 	public boolean isUsed(int key) {
 		return 0 <= Arrays.binarySearch(keys, 0, used, key);
 	}
+	
+	public void append(int key, double value){
+		update(used, key, value);
+	}
 
 	public void set(int key, double value) {
 		if (key < 0)

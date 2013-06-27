@@ -1,4 +1,4 @@
-package dempred.classifier;
+package dempred.metaclassifier;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -9,6 +9,8 @@ import java.util.logging.Logger;
 
 import dempred.chart.ChartTools;
 import dempred.chart.CorrelationPlot;
+import dempred.classifier.ClassifierInterface;
+import dempred.classifier.ClassifierTools;
 import dempred.datastructure.Datapoint;
 import dempred.datastructure.Dataset;
 import dempred.datastructure.DatasetManipulator;

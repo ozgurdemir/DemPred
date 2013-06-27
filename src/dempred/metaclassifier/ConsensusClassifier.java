@@ -1,4 +1,4 @@
-package dempred.classifier;
+package dempred.metaclassifier;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import dempred.classifier.ClassifierInterface;
+import dempred.classifier.ClassifierTools;
 import dempred.datastructure.Datapoint;
 import dempred.datastructure.Dataset;
 import dempred.datastructure.DatasetManipulator;

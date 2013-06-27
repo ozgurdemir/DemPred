@@ -7,15 +7,13 @@ import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import dempred.classifier.ClassifierInterface;
-import dempred.datastructure.Datapoint;
 import dempred.datastructure.Dataset;
-import dempred.datastructure.DatasetManipulator;
+import dempred.datastructure.MultigroupDatapoint;
 import dempred.grouper.GrouperInterface;
 import dempred.math.DenseVector;
-import dempred.math.VectorInterface;
 import dempred.transformer.LogisticTransformation;
 
-public class MultiClass<T extends Datapoint> implements ClassifierInterface<T>, Serializable {
+public class MultiClass<T extends MultigroupDatapoint> implements ClassifierInterface<T>, Serializable {
 
 	private static final long serialVersionUID = -7882351684133280142L;
 	private static final Logger logger = Logger.getLogger(MultiClass.class.getName());
@@ -39,6 +37,7 @@ public class MultiClass<T extends Datapoint> implements ClassifierInterface<T>, 
 			logger.fine(String.format("learning group %d of %d", index + 1, numGroups));
 			int currentGroup = group.getKey();
 			groups[index] = currentGroup;
+			Dataset<T> learnDataset = new Dataset<T>();
 			for (T datapoint : dataset) {
 				if (datapoint.getMultiGroup() == currentGroup) {
 					datapoint.setValue(1.0);
@@ -47,8 +46,9 @@ public class MultiClass<T extends Datapoint> implements ClassifierInterface<T>, 
 					datapoint.setValue(-1.0);
 					datapoint.setGroup(-1);
 				}
+				learnDataset.addDatapoint(datapoint);
 			}
-			baseClassifier.learn(dataset);
+			baseClassifier.learn(learnDataset);
 			classifiers.add(baseClassifier.clone());
 			++index;
 		}
@@ -58,7 +58,6 @@ public class MultiClass<T extends Datapoint> implements ClassifierInterface<T>, 
 
 	public void predict(Dataset<T> dataset) throws Exception {
 		DenseVector predictions;
-		LogisticTransformation tranformation = new LogisticTransformation();
 		for (T datapoint : dataset) {
 			predictions = new DenseVector(numGroups);
 			for (int i = 0; i < numGroups; ++i)
@@ -66,10 +65,7 @@ public class MultiClass<T extends Datapoint> implements ClassifierInterface<T>, 
 			int maxIndex = predictions.maxIndex(1)[0];
 			datapoint.setPredictedValue(predictions.get(maxIndex));
 			datapoint.setPredictedGroup(groups[maxIndex]);
-			
-			for(int i = 0; i<predictions.size(); ++i)
-				predictions.set(i, tranformation.transform(predictions.get(i)));
-			logger.fine(predictions.toString());
+			datapoint.setPredictedValues(predictions);
 		}
 	}
 
@@ -83,6 +79,8 @@ public class MultiClass<T extends Datapoint> implements ClassifierInterface<T>, 
 		datapoint.setPredictedGroup(groups[maxIndex]);
 		return datapoint.getValue();
 	}
+	
+//	 
 
 	public ClassifierInterface<T> clone() {
 		return null;

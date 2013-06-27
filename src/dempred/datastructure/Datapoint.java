@@ -22,8 +22,6 @@ public class Datapoint implements Cloneable, Serializable {
 	 */
 	protected Integer group;
 
-	protected Integer multiGroup;
-
 	/**
 	 * Can be used to weigh more reliable data points higher than others during
 	 * learning. OUtliers for example should be weighted lower than other
@@ -311,14 +309,6 @@ public class Datapoint implements Cloneable, Serializable {
 	 */
 	public final void setPredictedValue(double predictedValue) {
 		this.predictedValue = predictedValue;
-	}
-
-	public Integer getMultiGroup() {
-		return multiGroup;
-	}
-
-	public void setMultiGroup(Integer multiGroup) {
-		this.multiGroup = multiGroup;
 	}
 
 	/**
