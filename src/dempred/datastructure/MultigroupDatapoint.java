@@ -1,12 +1,19 @@
 package dempred.datastructure;
 
-import dempred.math.DenseVector;
-
 public class MultigroupDatapoint extends Datapoint {
 
 	private static final long serialVersionUID = 1L;
 	protected Integer multiGroup;
-	protected DenseVector predictedValues;
+	protected MultigroupPrediction[] multigroupPredictions;
+
+	public MultigroupDatapoint() {
+		super();
+	}
+
+	public MultigroupDatapoint(int numGroups) {
+		super();
+		multigroupPredictions = new MultigroupPrediction[numGroups];
+	}
 
 	public Integer getMultiGroup() {
 		return multiGroup;
@@ -16,12 +23,12 @@ public class MultigroupDatapoint extends Datapoint {
 		this.multiGroup = multiGroup;
 	}
 
-	public DenseVector getPredictedValues() {
-		return predictedValues;
+	public MultigroupPrediction[] getMultigroupPredictions() {
+		return multigroupPredictions;
 	}
 
-	public void setPredictedValues(DenseVector predictions) {
-		this.predictedValues = predictions;
+	public void setMultigroupPredictions(MultigroupPrediction[] multigroupPredictions) {
+		this.multigroupPredictions = multigroupPredictions;
 	}
 
 }

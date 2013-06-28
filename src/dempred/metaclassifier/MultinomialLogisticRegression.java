@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import dempred.classifier.ClassifierInterface;
 import dempred.datastructure.Dataset;
 import dempred.datastructure.MultigroupDatapoint;
+import dempred.datastructure.MultigroupPrediction;
 import dempred.grouper.GrouperInterface;
 import dempred.math.DenseVector;
 
@@ -75,27 +76,30 @@ public class MultinomialLogisticRegression<T extends MultigroupDatapoint> implem
 	}
 
 	public void predict(Dataset<T> dataset) throws Exception {
-		DenseVector predictions;
 		for (T datapoint : dataset) {
-			predictions = new DenseVector(numGroups);
+			MultigroupPrediction[] multigroupPredictions = new MultigroupPrediction[numGroups];
+			MultigroupPrediction maxPrediction = new MultigroupPrediction();
 			double sumPropabilities = 0.0;
 			double prediction;
 			for (int i = 0; i < numGroups - 1; ++i){
 				prediction = Math.exp(classifiers.get(i).predict(datapoint));
-				predictions.set(i, prediction);
+				multigroupPredictions[i] = new MultigroupPrediction(groups[i], prediction);
 				sumPropabilities += prediction;
 			}
 			// compute propability of pivot group
-			predictions.set(numGroups - 1, 1.0 / (1.0 + sumPropabilities));
+			multigroupPredictions[numGroups - 1] = new MultigroupPrediction(pivotGroup, 1.0 / (1.0 + sumPropabilities));
 			
 			// compute propability of other groups group
-			for (int i = 0; i < numGroups  - 1; ++i)
-				predictions.set(i, predictions.get(i) / (1.0 + sumPropabilities));
+			for (MultigroupPrediction multigroupPrediction: multigroupPredictions)
+				multigroupPrediction.prediction = multigroupPrediction.prediction / (1.0 + sumPropabilities);
 
-			int maxIndex = predictions.maxIndex(1)[0];
-			datapoint.setPredictedValue(predictions.get(maxIndex));
-			datapoint.setPredictedGroup(groups[maxIndex]);
-			datapoint.setPredictedValues(predictions);
+			for(MultigroupPrediction multigroupPrediction: multigroupPredictions){
+				if(multigroupPrediction.prediction > maxPrediction.prediction)
+					maxPrediction = multigroupPrediction;
+			}
+			datapoint.setPredictedValue(maxPrediction.prediction);
+			datapoint.setPredictedGroup(maxPrediction.group);
+			datapoint.setMultigroupPredictions(multigroupPredictions);
 		}
 	}
 

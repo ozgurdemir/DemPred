@@ -296,23 +296,6 @@ public class DatasetResult {
 		return String.format("PosRight: %d of %d(%.2f%%) | NegRight %d of %d(%.2f%%) | total %d of %d(%.2f%%) | MCC: %.4f | AUC:%.4f", correctPositives, numPositives, fractPosRight, correctNegatives, numNegatives, fractNegRight, TotalRight, total, ((fractPosRight + fractNegRight) / 2), mcc, auc);
 	}
 	
-	public static String toStringMultiClassification(Dataset<?> dataset, String[] groupNames) {
-		StringBuffer strBuffer = new StringBuffer();
-		int total = 0;
-		for(Entry<Integer, Integer> entry : dataset.getGroupCounter().entrySet()){
-			int correctPositives = dataset.numCorrectPredictions(entry.getKey());
-			total += correctPositives;
-			double fractPosRight = ((double) 100.0 * correctPositives / entry.getValue());
-			String name = "undefined";
-			if(groupNames != null)
-				name = groupNames[entry.getKey()];
-			strBuffer.append(String.format("Group:%d (%s) CorrectPredictions: %d of %d(%.2f%%)%n", entry.getKey(), name, correctPositives, entry.getValue(),  fractPosRight));
-		}
-		double fracTotalRight = ((double) 100.0 * total / dataset.size());
-		strBuffer.append(String.format("Total:%d of %d(%.2f%%)%n", total, dataset.size(), fracTotalRight));
-		return strBuffer.toString();
-	}
-
 	/**
 	 * Outputs a single line of quality measurements specially for regression tasks.
 	 *

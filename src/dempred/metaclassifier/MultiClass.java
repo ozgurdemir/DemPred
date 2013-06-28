@@ -1,42 +1,38 @@
 package dempred.metaclassifier;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 import java.util.logging.Logger;
 
 import dempred.classifier.ClassifierInterface;
 import dempred.datastructure.Dataset;
 import dempred.datastructure.MultigroupDatapoint;
+import dempred.datastructure.MultigroupPrediction;
 import dempred.grouper.GrouperInterface;
-import dempred.math.DenseVector;
-import dempred.transformer.LogisticTransformation;
 
 public class MultiClass<T extends MultigroupDatapoint> implements ClassifierInterface<T>, Serializable {
 
 	private static final long serialVersionUID = -7882351684133280142L;
 	private static final Logger logger = Logger.getLogger(MultiClass.class.getName());
 	ClassifierInterface<T> baseClassifier;
-	private ArrayList<ClassifierInterface<T>> classifiers;
+	private Map<Integer, ClassifierInterface<T>> classifiers;
 	private Map<Integer, Integer> groupCounter;
-	private int[] groups;
 	private int numGroups;
 
 	public MultiClass(ClassifierInterface<T> classifier, Dataset<T> dataset) {
 		this.baseClassifier = classifier;
 		this.groupCounter = dataset.getGroupCounter();
 		this.numGroups = groupCounter.size();
-		this.classifiers = new ArrayList<ClassifierInterface<T>>(numGroups);
-		this.groups = new int[numGroups];
+		this.classifiers = new TreeMap<Integer, ClassifierInterface<T>>();
 	}
 
 	public void learn(Dataset<T> dataset) throws Exception {
 		int index = 0;
 		for (Entry<Integer, Integer> group : groupCounter.entrySet()) {
-			logger.fine(String.format("learning group %d of %d", index + 1, numGroups));
+			logger.fine(String.format("learning group %d of %d", ++index, numGroups));
 			int currentGroup = group.getKey();
-			groups[index] = currentGroup;
 			Dataset<T> learnDataset = new Dataset<T>();
 			for (T datapoint : dataset) {
 				if (datapoint.getMultiGroup() == currentGroup) {
@@ -49,38 +45,36 @@ public class MultiClass<T extends MultigroupDatapoint> implements ClassifierInte
 				learnDataset.addDatapoint(datapoint);
 			}
 			baseClassifier.learn(learnDataset);
-			classifiers.add(baseClassifier.clone());
-			++index;
+			classifiers.put(currentGroup, baseClassifier.clone());
 		}
 		for (T datapoint : dataset)
 			datapoint.setGroup(datapoint.getMultiGroup());
 	}
 
 	public void predict(Dataset<T> dataset) throws Exception {
-		DenseVector predictions;
-		for (T datapoint : dataset) {
-			predictions = new DenseVector(numGroups);
-			for (int i = 0; i < numGroups; ++i)
-				predictions.set(i, classifiers.get(i).predict(datapoint));
-			int maxIndex = predictions.maxIndex(1)[0];
-			datapoint.setPredictedValue(predictions.get(maxIndex));
-			datapoint.setPredictedGroup(groups[maxIndex]);
-			datapoint.setPredictedValues(predictions);
-		}
+		for (T datapoint : dataset) 
+			predict(datapoint);
 	}
 
 	public double predict(T datapoint) throws Exception {
-		DenseVector predictions;
-		predictions = new DenseVector(numGroups);
-		for (int i = 0; i < numGroups; ++i)
-			predictions.set(i, classifiers.get(i).predict(datapoint));
-		int maxIndex = predictions.maxIndex(1)[0];
-		datapoint.setPredictedValue(predictions.get(maxIndex));
-		datapoint.setPredictedGroup(groups[maxIndex]);
+		int index = 0;
+		MultigroupPrediction[] multigroupPredictions = new MultigroupPrediction[numGroups];
+		MultigroupPrediction maxPrediction = new MultigroupPrediction();
+		for (Entry<Integer, ClassifierInterface<T>> groupClassifier : classifiers.entrySet()){
+			MultigroupPrediction multigroupPrediction = new MultigroupPrediction(groupClassifier.getKey(), groupClassifier.getValue().predict(datapoint));
+			multigroupPredictions[index++] = multigroupPrediction;
+			if (multigroupPrediction.prediction > maxPrediction.prediction)
+				maxPrediction = multigroupPrediction;
+		}
+		datapoint.setPredictedValue(maxPrediction.prediction);
+		datapoint.setPredictedGroup(maxPrediction.group);
+		datapoint.setMultigroupPredictions(multigroupPredictions);
 		return datapoint.getValue();
 	}
-	
-//	 
+
+	public ClassifierInterface<T> getClassifierOfGroup(int group) {
+		return classifiers.get(group);
+	}
 
 	public ClassifierInterface<T> clone() {
 		return null;
@@ -96,10 +90,8 @@ public class MultiClass<T extends MultigroupDatapoint> implements ClassifierInte
 		return baseClassifier.getGrouper();
 	}
 
-	public ArrayList<ClassifierInterface<T>> getClassifiers() {
+	public Map<Integer, ClassifierInterface<T>> getClassifiers() {
 		return classifiers;
 	}
-	
-	
 
 }

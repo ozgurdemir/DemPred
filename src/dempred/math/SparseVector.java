@@ -279,7 +279,7 @@ public class SparseVector implements Cloneable, VectorInterface {
 			}
 			return this;
 		}
-		throw new IllegalArgumentException("Wrong types johnnyâ");
+		throw new IllegalArgumentException("Wrong types johnny");
 	}
 
 	@Override
