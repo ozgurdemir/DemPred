@@ -60,7 +60,8 @@ public class MultinomialLogisticRegression<T extends MultigroupDatapoint> implem
 						datapoint.setValue(1.0);
 						datapoint.setGroup(1);
 						learnDataset.addDatapoint(datapoint);
-					} else if (datapoint.getMultiGroup() == pivotGroup) {
+					} // else if (datapoint.getMultiGroup() == pivotGroup) {
+					else {	
 						datapoint.setValue(-1.0);
 						datapoint.setGroup(-1);
 						learnDataset.addDatapoint(datapoint);
