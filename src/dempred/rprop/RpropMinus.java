@@ -65,4 +65,8 @@ public class RpropMinus implements RpropInterface {
 		wMin = min;
 	}
 
+	public double[] getStepSize() {
+		return stepSize;
+	}
+
 }

@@ -400,8 +400,9 @@ public class DenseVector implements Cloneable, Serializable, VectorInterface {
 		if (this.size() != b.size())
 			throw new IllegalArgumentException("Vectors have different number of elements: " + this.elements.length + " and " + b.size());
 		if (b instanceof DenseVector) {
+			DenseVector denseVector = (DenseVector) b;
 			for (int i = 0; i < elements.length; ++i)
-				this.elements[i] += b.get(i);
+				this.elements[i] += denseVector.elements[i];
 		} else if (b instanceof SparseVector) {
 			SparseVector sparseVector = (SparseVector) b;
 			int[] keys = sparseVector.getKeys();
