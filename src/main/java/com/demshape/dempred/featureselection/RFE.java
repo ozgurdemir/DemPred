@@ -3,7 +3,6 @@ package com.demshape.dempred.featureselection;
 import java.util.logging.Logger;
 
 import com.demshape.dempred.classifier.AbstractLinearClassifier;
-import com.demshape.dempred.classifier.WrapperPrimal;
 import com.demshape.dempred.datastructure.Datapoint;
 import com.demshape.dempred.datastructure.Dataset;
 import com.demshape.dempred.math.VectorInterface;

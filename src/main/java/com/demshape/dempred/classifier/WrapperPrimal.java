@@ -5,8 +5,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.demshape.dempred.bfgs.LBFGS;
-import com.demshape.dempred.bfgs.OWLQNMinimizer;
 import com.demshape.dempred.bfgs.LBFGS.ExceptionWithIflag;
+import com.demshape.dempred.bfgs.OWLQNMinimizer;
 import com.demshape.dempred.datastructure.Datapoint;
 import com.demshape.dempred.datastructure.Dataset;
 import com.demshape.dempred.loggingtools.LoggerTools;
@@ -14,7 +14,6 @@ import com.demshape.dempred.math.DenseVector;
 import com.demshape.dempred.math.VectorInterface;
 import com.demshape.dempred.rprop.IRpropMinus;
 import com.demshape.dempred.rprop.RpropInterface;
-
 
 import edu.stanford.nlp.optimization.DiffFunction;
 

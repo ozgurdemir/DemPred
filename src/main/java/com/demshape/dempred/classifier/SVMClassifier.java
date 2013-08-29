@@ -1,14 +1,14 @@
 package com.demshape.dempred.classifier;
 
-import com.demshape.dempred.datastructure.Datapoint;
-import com.demshape.dempred.datastructure.Dataset;
-import com.demshape.dempred.grouper.GrouperInterface;
-
 import libsvm.svm;
 import libsvm.svm_model;
 import libsvm.svm_node;
 import libsvm.svm_parameter;
 import libsvm.svm_problem;
+
+import com.demshape.dempred.datastructure.Datapoint;
+import com.demshape.dempred.datastructure.Dataset;
+import com.demshape.dempred.grouper.GrouperInterface;
 
 public class SVMClassifier<T extends Datapoint> implements ClassifierInterface<T> {
 

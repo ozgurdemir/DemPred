@@ -3,7 +3,6 @@ package com.demshape.dempred.datastructure;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map.Entry;
 
 import com.demshape.dempred.losslunction.LossFunctionInterface;
 import com.demshape.dempred.math.DenseVector;

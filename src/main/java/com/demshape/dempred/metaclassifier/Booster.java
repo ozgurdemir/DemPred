@@ -2,9 +2,9 @@ package com.demshape.dempred.metaclassifier;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import com.demshape.dempred.chart.ChartTools;

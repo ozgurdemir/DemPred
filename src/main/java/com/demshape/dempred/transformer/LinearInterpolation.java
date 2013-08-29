@@ -1,8 +1,8 @@
 package com.demshape.dempred.transformer;
 
+import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 
 public class LinearInterpolation {
 

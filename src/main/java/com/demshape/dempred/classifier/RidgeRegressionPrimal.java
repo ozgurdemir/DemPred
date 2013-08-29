@@ -3,15 +3,13 @@ package com.demshape.dempred.classifier;
 import java.io.Serializable;
 import java.util.logging.Logger;
 
+import Jama.CholeskyDecomposition;
+import Jama.Matrix;
+
 import com.demshape.dempred.datastructure.Datapoint;
 import com.demshape.dempred.datastructure.Dataset;
 import com.demshape.dempred.losslunction.Mse;
 import com.demshape.dempred.math.DenseVector;
-
-
-
-import Jama.CholeskyDecomposition;
-import Jama.Matrix;
 
 public class RidgeRegressionPrimal<T extends Datapoint> extends AbstractLinearClassifier<T> implements ClassifierInterface<T>, Cloneable, Serializable {
 

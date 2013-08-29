@@ -1,6 +1,5 @@
 package com.demshape.dempred.featuregeneration;
 
-import java.util.Arrays;
 
 /**
  * This feature generator class is used to generate "sparse" features for amino acid sequences. 

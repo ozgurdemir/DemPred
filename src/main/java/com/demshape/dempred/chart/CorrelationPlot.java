@@ -2,9 +2,7 @@ package com.demshape.dempred.chart;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Paint;
 import java.awt.geom.Ellipse2D;
-
 
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;

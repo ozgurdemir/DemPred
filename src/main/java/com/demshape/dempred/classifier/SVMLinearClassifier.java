@@ -4,12 +4,12 @@ import com.demshape.dempred.datastructure.Datapoint;
 import com.demshape.dempred.datastructure.Dataset;
 import com.demshape.dempred.grouper.GrouperInterface;
 
-import liblinear.FeatureNode;
-import liblinear.Linear;
-import liblinear.Model;
-import liblinear.Parameter;
-import liblinear.Problem;
-import liblinear.SolverType;
+import de.bwaldvogel.liblinear.FeatureNode;
+import de.bwaldvogel.liblinear.Linear;
+import de.bwaldvogel.liblinear.Model;
+import de.bwaldvogel.liblinear.Parameter;
+import de.bwaldvogel.liblinear.Problem;
+import de.bwaldvogel.liblinear.SolverType;
 
 public class SVMLinearClassifier<T extends Datapoint> implements ClassifierInterface<T> {
 	private Model svmModel;
@@ -28,10 +28,10 @@ public class SVMLinearClassifier<T extends Datapoint> implements ClassifierInter
 
 	@Override
 	public void learn(Dataset<T> dataset) throws IllegalArgumentException {
-		svmParameter = new Parameter(SolverType.L2_LR, c, eps);
+		svmParameter = new Parameter(SolverType.L2R_LR, c, eps);
 		Problem svmProblem = new Problem();
 		FeatureNode[][] nodes = new FeatureNode[dataset.size()][];
-		int[] y = new int[dataset.size()];
+		double[] y = new double[dataset.size()];
 		for (int i = 0; i < dataset.size(); ++i) {
 			Datapoint datapoint = dataset.getDatapoint(i);
 			// if (mode == 0)

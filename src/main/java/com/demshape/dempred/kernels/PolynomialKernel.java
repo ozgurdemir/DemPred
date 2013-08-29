@@ -2,7 +2,6 @@ package com.demshape.dempred.kernels;
 
 import java.io.Serializable;
 
-import com.demshape.dempred.math.DenseVector;
 import com.demshape.dempred.math.VectorInterface;
 
 

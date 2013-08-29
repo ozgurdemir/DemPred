@@ -6,8 +6,6 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
-import com.demshape.dempred.math.SparseVector;
-
 
 public class SparseVectorTest extends TestCase {
 
