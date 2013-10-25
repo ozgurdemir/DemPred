@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jfree.chart.JFreeChart;
+
+import com.demshape.dempred.chart.ChartTools;
+import com.demshape.dempred.chart.RocCurve;
 import com.demshape.dempred.classifier.WrapperPrimal;
 import com.demshape.dempred.datastructure.Datapoint;
 import com.demshape.dempred.datastructure.Dataset;
@@ -39,16 +43,16 @@ public class Example1 {
 			Datapoint posDatapoint = new Datapoint();
 			posDatapoint.setComment("measured via method b which is 4.5 times more reliable than method a");
 			posDatapoint.setWeight(4.5);
-			negDatapoint.setValue(1.0);
-			negDatapoint.setGroup(1);
-			negDatapoint.setFeatureVector(new DenseVector(new double[10]));
+			posDatapoint.setValue(1.0);
+			posDatapoint.setGroup(1);
+			posDatapoint.setFeatureVector(new DenseVector(new double[10]));
 			
 			// you may also create sparse representation
 			negDatapoint.setFeatureVector(new SparseVector(new double[10]));
 
 			// add data points to data set
-			dataset.addDatapoint(posDatapoint);
 			dataset.addDatapoint(negDatapoint);
+			dataset.addDatapoint(posDatapoint);
 			
 			// split into train and test set
 			ArrayList<Dataset<Datapoint>> splittedDataset = DatasetGenerator.split(dataset, 0.8);
@@ -102,6 +106,11 @@ public class Example1 {
 			double predictionAUC = DatasetResult.auc(testset);
 			double predictionMCC = DatasetResult.mcc(testset);
 			double msePredictionLoss = DatasetResult.lossFunction(testset, new Mse<Datapoint>());
+			
+			// generate roc curves
+			JFreeChart chart = RocCurve.showRocCurve("AUC", trainset, testset);
+			ChartTools.showChartAsFrame(chart);
+			ChartTools.saveChartAsJPG("C:/path/results", chart, 500, 500);
 			
 			
 		} catch (Exception e) {

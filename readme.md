@@ -104,7 +104,8 @@
 	Logger.getLogger(WrapperPrimal.class.getName()).setLevel(Level.FINEST);
 	Logger.getLogger(WrapperPrimal.class.getName()).setParent(logger);
 	
-### extend to multiclass metaclassifier
+### meta classifiers
+Meta classifiers are classifiers that use A multiclass classifier is basically a meta classifier
 	MultiClass<MultigroupDatapoint> multiClassifier = new
 	MultiClass<MultigroupDatapoint>(classifier, trainset);
 	Logger.getLogger(MultiClass.class.getName()).setParent(logger);
