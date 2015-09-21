@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.demshape.dempred.losslunction.LossFunctionInterface;
+import com.demshape.dempred.lossfunction.LossFunctionInterface;
 import com.demshape.dempred.math.DenseVector;
 import com.demshape.dempred.math.VectorInterface;
 import com.demshape.dempred.math.VectorMetric;

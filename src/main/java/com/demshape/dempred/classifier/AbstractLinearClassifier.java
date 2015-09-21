@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import com.demshape.dempred.datastructure.Datapoint;
 import com.demshape.dempred.datastructure.Dataset;
 import com.demshape.dempred.grouper.GrouperInterface;
-import com.demshape.dempred.losslunction.LossFunctionInterface;
+import com.demshape.dempred.lossfunction.LossFunctionInterface;
 import com.demshape.dempred.math.DenseVector;
 import com.demshape.dempred.math.VectorInterface;
 

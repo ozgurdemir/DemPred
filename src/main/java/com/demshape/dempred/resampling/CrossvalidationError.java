@@ -5,7 +5,7 @@ import java.io.Serializable;
 import com.demshape.dempred.classifier.ClassifierInterface;
 import com.demshape.dempred.datastructure.Datapoint;
 import com.demshape.dempred.datastructure.Dataset;
-import com.demshape.dempred.losslunction.LossFunctionInterface;
+import com.demshape.dempred.lossfunction.LossFunctionInterface;
 
 
 

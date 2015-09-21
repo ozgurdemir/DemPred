@@ -15,8 +15,8 @@ import com.demshape.dempred.datastructure.DatasetGenerator;
 import com.demshape.dempred.datastructure.DatasetNormalizer;
 import com.demshape.dempred.datastructure.DatasetResult;
 import com.demshape.dempred.grouper.AboveThreshold;
-import com.demshape.dempred.losslunction.LogisticRegression;
-import com.demshape.dempred.losslunction.Mse;
+import com.demshape.dempred.lossfunction.LogisticRegression;
+import com.demshape.dempred.lossfunction.Mse;
 import com.demshape.dempred.math.DenseVector;
 import com.demshape.dempred.math.SparseVector;
 

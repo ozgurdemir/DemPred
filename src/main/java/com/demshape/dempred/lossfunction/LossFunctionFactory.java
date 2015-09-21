@@ -1,4 +1,4 @@
-package com.demshape.dempred.losslunction;
+package com.demshape.dempred.lossfunction;
 
 import com.demshape.dempred.datastructure.Datapoint;
 

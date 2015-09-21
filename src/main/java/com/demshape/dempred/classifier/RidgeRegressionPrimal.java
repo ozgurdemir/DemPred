@@ -8,7 +8,7 @@ import Jama.Matrix;
 
 import com.demshape.dempred.datastructure.Datapoint;
 import com.demshape.dempred.datastructure.Dataset;
-import com.demshape.dempred.losslunction.Mse;
+import com.demshape.dempred.lossfunction.Mse;
 import com.demshape.dempred.math.DenseVector;
 
 public class RidgeRegressionPrimal<T extends Datapoint> extends AbstractLinearClassifier<T> implements ClassifierInterface<T>, Cloneable, Serializable {
