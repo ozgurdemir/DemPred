@@ -191,6 +191,16 @@ public abstract class AbstractLinearClassifier<T extends Datapoint> implements C
 //		}
 //		return (L_deriv(w, dataset).mulScalar(obj).addVector(w_copy.sign().mulScalar(lambda1)).addVector(w_copy2.mulScalar(lambda2 * 2)));
 	}
+	
+	/**
+	 * 
+	 * @param dataset
+	 * @param learnRate
+	 */
+	public final void update(Dataset<T> dataset, Double learnRate) {
+		VectorInterface gradient = L_mod_deriv(weight, dataset);
+		weight = gradient.mulScalar(learnRate);
+	}
 
 	/* (non-Javadoc)
 	 * @see dempred.classifier.ClassifierInterface#predict(dempred.datastructure.Dataset)
